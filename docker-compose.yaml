@@ -1,0 +1,193 @@
+services:
+  db:
+    image: postgres:16
+    container_name: postgres_diploma
+    restart: always
+    #    env_file:
+    #      - ../.env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      TZ: Europe/Moscow
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      #      - ./pg_logs/:/var/lib/postgresql/logs # Подключение папки для логов,в будущем можно подключить в хранилище докера
+      #для нормального просмотра содержимого логов нужно  sudo chown 999:999 -R pg_logs/ && sudo сhmod -R 777 pg_logs/
+      - ./postgresql.conf:/etc/postgresql/postgresql.conf # Подключение конфигурационного файла
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 512M
+        reservations:
+          memory: 256M
+    networks:
+      - monitoring_net
+
+  postgres_exporter_diploma:
+    image: bitnami/postgres-exporter:0.15.0
+    container_name: exporter_db_diploma
+    restart: always
+    env_file:
+      - .env
+    environment:
+      DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?sslmode=disable"
+    ports:
+      - "9187:9187"
+    volumes:
+      - postgres_exporter_data_diploma:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 512M
+        reservations:
+          memory: 256M
+    networks:
+      - monitoring_net
+
+  postgres_exporter_fastapi:
+    image: bitnami/postgres-exporter:0.15.0
+    container_name: exporter_db_fast_api
+    restart: always
+    environment:
+      DATA_SOURCE_NAME: "postgresql://amin:my_super_password@postgres_fast_api:5432/fast_api?sslmode=disable"
+    ports:
+      - "9188:9187"
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 512M
+        reservations:
+          memory: 256M
+    networks:
+      - monitoring_net
+
+  prometheus:
+    image: bitnami/prometheus:2.55.1
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    restart: unless-stopped
+
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.retention.time=7d'   # Время хранения на 30 дней
+      - '--storage.tsdb.retention.size=10GB'   # Максимальный размер
+    #      - '--storage.tsdb.path=/prometheus'
+    #      - '--storage.tsdb.retention.time=7d'
+    #      - '--storage.tsdb.retention.size=300MB'
+    #    command:
+    #      - '--storage.tsdb.retention.time=2d'
+    #      - '--storage.tsdb.retention.size=200MB'
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 512M
+        reservations:
+          memory: 256M
+    networks:
+      - monitoring_net
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.51.0
+    container_name: cadvisor
+    privileged: true
+    devices:
+      - /dev/kmsg:/dev/kmsg
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /cgroup:/cgroup:ro
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 512M
+        reservations:
+          memory: 256M
+    #    network_mode: host
+    networks:
+      - monitoring_net
+
+  node-exporter:
+    image: bitnami/node-exporter:1.8.2
+    container_name: node-exporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+    ports:
+      - "9100:9100"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 512M
+        reservations:
+          memory: 256M
+    networks:
+      - monitoring_net
+
+
+  grafana:
+    image: grafana/grafana:main
+    container_name: grafana
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    restart: unless-stopped
+    volumes:
+      - grafana_data:/var/lib/grafana
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 512M
+        reservations:
+          memory: 256M
+    networks:
+      - monitoring_net
+
+volumes:
+  pg_data:
+    name: diploma_db
+  grafana_data:
+    name: grafana_vol
+  postgres_exporter_data_diploma:
+    name: exporter_data_diploma
+  postgres_exporter_data_fast_api:
+    name: exporter_data_fast_api
+  prometheus_data:
+    name: prometheus_data
+#
+networks:
+  monitoring_net:
+    name: monitoring_net
+#    external: true
+
+
+
