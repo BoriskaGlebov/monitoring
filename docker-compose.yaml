@@ -1,14 +1,14 @@
 services:
+#База данных postgres
 #  db:
 #    image: postgres:16
 #    container_name: postgres_diploma
 #    restart: always
 #    #    env_file:
-#    #      - ../.env
+#    #      - .env
 #    environment:
 #      POSTGRES_USER: ${POSTGRES_USER}
 #      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-#      #      POSTGRES_MULTIPLE_DATABASES: ${POSTGRES_DB},${POSTGRES_DB3}
 #      POSTGRES_DB: ${POSTGRES_DB}
 #      TZ: Europe/Moscow
 #    ports:
@@ -33,23 +33,24 @@ services:
 #          memory: 256M
 #    networks:
 #      - monitoring_net
-  locust-exporter:
-    image: ghbadr/locust-exporter
-    container_name: locust-exporter
-#    network_mode: "host"  # Use host network to connect to Locust
-    restart: always
-    environment:
-      - LOCUST_EXPORTER_URI=http://10.0.2.15:8089  # Address of Locust
-      - LOCUST_EXPORTER_TIMEOUT=5s  # Timeout for requests to Locust
-    deploy:
-      resources:
-        limits:
-          cpus: '1.5'
-          memory: 512M
-        reservations:
-          memory: 256M
-    networks:
-      - monitoring_net
+#exporter для мониторинга нагрузки на fast api, так проводится нагрузочное тестирование
+#  locust-exporter:
+#    image: ghbadr/locust-exporter
+#    container_name: locust-exporter
+##    network_mode: "host"  # Use host network to connect to Locust
+#    restart: always
+#    environment:
+#      - LOCUST_EXPORTER_URI=http://10.0.2.15:8089  # Address of Locust
+#      - LOCUST_EXPORTER_TIMEOUT=5s  # Timeout for requests to Locust
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '1.5'
+#          memory: 512M
+#        reservations:
+#          memory: 256M
+#    networks:
+#      - monitoring_net
 
   postgres_exporter_diploma:
     image: bitnami/postgres-exporter:0.15.0
@@ -105,12 +106,6 @@ services:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.retention.time=7d'   # Время хранения на 30 дней
       - '--storage.tsdb.retention.size=10GB'   # Максимальный размер
-    #      - '--storage.tsdb.path=/prometheus'
-    #      - '--storage.tsdb.retention.time=7d'
-    #      - '--storage.tsdb.retention.size=300MB'
-    #    command:
-    #      - '--storage.tsdb.retention.time=2d'
-    #      - '--storage.tsdb.retention.size=200MB'
     deploy:
       resources:
         limits:
@@ -121,6 +116,7 @@ services:
     networks:
       - monitoring_net
   cadvisor:
+    # cAdvisor собирает данные о ресурсах и производительности контейнеров
     image: gcr.io/cadvisor/cadvisor:v0.51.0
     container_name: cadvisor
     privileged: true
@@ -140,11 +136,11 @@ services:
           memory: 512M
         reservations:
           memory: 256M
-    #    network_mode: host
     networks:
       - monitoring_net
 
   node-exporter:
+    #Сбор системных метрик
     image: bitnami/node-exporter:1.8.2
     container_name: node-exporter
     volumes:
@@ -205,7 +201,8 @@ volumes:
 networks:
   monitoring_net:
     name: monitoring_net
-#    external: true
+#    external: true #иногда нужно указать что б подключался к созданной сети.
+# что б мониторить контейнеры из разных docker compose файлов
 
 
 
