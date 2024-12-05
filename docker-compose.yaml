@@ -52,45 +52,45 @@ services:
 #    networks:
 #      - monitoring_net
 
-  postgres_exporter_diploma:
-    image: bitnami/postgres-exporter:0.15.0
-    container_name: exporter_db_diploma
-    restart: always
-    env_file:
-      - .env
-    environment:
-      DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?sslmode=disable"
-    ports:
-      - "9187:9187"
-    volumes:
-      - postgres_exporter_data_diploma:/var/lib/postgresql/data
-    deploy:
-      resources:
-        limits:
-          cpus: '1.5'
-          memory: 512M
-        reservations:
-          memory: 256M
-    networks:
-      - monitoring_net
-
-  postgres_exporter_fastapi:
-    image: bitnami/postgres-exporter:0.15.0
-    container_name: exporter_db_fast_api
-    restart: always
-    environment:
-      DATA_SOURCE_NAME: "postgresql://amin:my_super_password@postgres_fast_api:5432/fast_api?sslmode=disable"
-    ports:
-      - "9188:9187"
-    deploy:
-      resources:
-        limits:
-          cpus: '1.5'
-          memory: 512M
-        reservations:
-          memory: 256M
-    networks:
-      - monitoring_net
+#  postgres_exporter_diploma:
+#    image: bitnami/postgres-exporter:0.15.0
+#    container_name: exporter_db_diploma
+#    restart: always
+#    env_file:
+#      - .env
+#    environment:
+#      DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?sslmode=disable"
+#    ports:
+#      - "9187:9187"
+#    volumes:
+#      - postgres_exporter_data_diploma:/var/lib/postgresql/data
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '1.5'
+#          memory: 512M
+#        reservations:
+#          memory: 256M
+#    networks:
+#      - monitoring_net
+#
+#  postgres_exporter_fastapi:
+#    image: bitnami/postgres-exporter:0.15.0
+#    container_name: exporter_db_fast_api
+#    restart: always
+#    environment:
+#      DATA_SOURCE_NAME: "postgresql://amin:my_super_password@postgres_fast_api:5432/fast_api?sslmode=disable"
+#    ports:
+#      - "9188:9187"
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '1.5'
+#          memory: 512M
+#        reservations:
+#          memory: 256M
+#    networks:
+#      - monitoring_net
 
   prometheus:
     image: bitnami/prometheus:2.55.1
@@ -187,14 +187,14 @@ services:
       - monitoring_net
 
 volumes:
-  pg_data:
-    name: diploma_db
+#  pg_data:
+#    name: diploma_db
   grafana_data:
     name: grafana_vol
-  postgres_exporter_data_diploma:
-    name: exporter_data_diploma
-  postgres_exporter_data_fast_api:
-    name: exporter_data_fast_api
+#  postgres_exporter_data_diploma:
+#    name: exporter_data_diploma
+#  postgres_exporter_data_fast_api:
+#    name: exporter_data_fast_api
   prometheus_data:
     name: prometheus_data
 #

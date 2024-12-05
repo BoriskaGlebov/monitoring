@@ -1,0 +1,38 @@
+name: Linters Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+#    needs: tests  # Зависит от успешного завершения job tests.
+    if: github.ref == 'refs/heads/main'  # Выполняется только для ветки main.
+    steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4  # Клонирование репозитория
+
+        - name: Set up SSH key
+          uses: webfactory/ssh-agent@v0.5.3  # Настройка SSH-ключа
+          with:
+            ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # Приватный ключ из секретов
+
+        - name: Add known hosts
+          run: echo "${{ secrets.SERVER_IP }} $(ssh-keyscan -H ${{ secrets.SERVER_IP }})" >> ~/.ssh/known_hosts  # Добавление сервера в known_hosts
+        - name: Test SSH connection
+          run: |
+            ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "whoami" && echo PRIVET # Проверка подключения
+
+        - name: Deploy to server
+          run: |
+            ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+            cd production/monitoring || exit  # Переход в директорию приложения
+            git pull origin main            # Обновление кода из репозитория
+            docker compose down  # Остановка текущих контейнеров (если они запущены)
+            docker compose up -d --build
+            EOF
