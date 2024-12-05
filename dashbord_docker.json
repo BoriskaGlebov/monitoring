@@ -18,7 +18,6 @@
   "description": "A simple overview of the most important Docker host and container metrics. (cAdvisor/Prometheus)",
   "editable": true,
   "fiscalYearStartMonth": 0,
-  "gnetId": 893,
   "graphTooltip": 1,
   "id": 1,
   "links": [
@@ -107,7 +106,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.4.0-211378",
       "targets": [
         {
           "datasource": {
@@ -199,7 +198,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.4.0-211378",
       "targets": [
         {
           "datasource": {
@@ -281,7 +280,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.4.0-211378",
       "targets": [
         {
           "datasource": {
@@ -364,7 +363,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.4.0-211378",
       "targets": [
         {
           "datasource": {
@@ -445,7 +444,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.4.0-211378",
       "targets": [
         {
           "datasource": {
@@ -532,7 +531,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.4.0-211378",
       "targets": [
         {
           "datasource": {
@@ -541,10 +540,24 @@
           },
           "editorMode": "code",
           "expr": "node_load1{instance=~'node-exporter:9100'} / count by(job, instance)(count by(job, instance, cpu)(node_cpu_seconds_total{instance=~'node-exporter:9100'}))",
+          "hide": true,
           "intervalFactor": 2,
           "range": true,
           "refId": "A",
           "step": 1800
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "be5zfq1ec4w74a"
+          },
+          "editorMode": "code",
+          "expr": "sum(node_load1{instance=~\"node-exporter:9100\"}) / count(node_cpu_seconds_total{instance=~\"node-exporter:9100\"}) ",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B"
         }
       ],
       "title": "Load",
@@ -655,6 +668,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.4.0-211378",
       "targets": [
         {
           "datasource": {
@@ -790,6 +804,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.4.0-211378",
       "targets": [
         {
           "datasource": {
@@ -863,40 +878,6 @@
       "type": "timeseries"
     },
     {
-      "alert": {
-        "conditions": [
-          {
-            "evaluator": {
-              "params": [
-                1.25
-              ],
-              "type": "gt"
-            },
-            "query": {
-              "params": [
-                "A",
-                "5m",
-                "now"
-              ]
-            },
-            "reducer": {
-              "params": [],
-              "type": "avg"
-            },
-            "type": "query"
-          }
-        ],
-        "executionErrorState": "alerting",
-        "frequency": "60s",
-        "handler": 1,
-        "name": "Panel Title alert",
-        "noDataState": "keep_state",
-        "notifications": [
-          {
-            "id": 1
-          }
-        ]
-      },
       "datasource": {},
       "fieldConfig": {
         "defaults": {
@@ -987,6 +968,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.4.0-211378",
       "targets": [
         {
           "datasource": {
@@ -995,6 +977,7 @@
           },
           "editorMode": "code",
           "expr": "node_load1{instance=~\"node-exporter:9100\"} / count by(job, instance)(count by(job, instance, cpu)(node_cpu_seconds_total{instance=~\"node-exporter:9100\"}))",
+          "hide": true,
           "intervalFactor": 2,
           "range": true,
           "refId": "A",
@@ -1003,53 +986,51 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ce165k2x8n400d"
+            "uid": "be5zfq1ec4w74a"
           },
-          "expr": "",
-          "hide": false,
+          "editorMode": "code",
+          "expr": "node_load1{instance=~\"node-exporter:9100\"} ",
+          "hide": true,
           "instant": false,
+          "legendFormat": "__auto",
           "range": true,
           "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "be5zfq1ec4w74a"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "node_load1{instance=\"node-exporter:9100\"}",
+          "fullMetaSearch": false,
+          "hide": true,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "C",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "be5zfq1ec4w74a"
+          },
+          "editorMode": "code",
+          "expr": "sum(node_load1{instance=~\"node-exporter:9100\"}) / count(node_cpu_seconds_total{instance=~\"node-exporter:9100\"})",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "D"
         }
       ],
       "title": "Load",
       "type": "timeseries"
     },
     {
-      "alert": {
-        "conditions": [
-          {
-            "evaluator": {
-              "params": [
-                850000000000
-              ],
-              "type": "gt"
-            },
-            "query": {
-              "params": [
-                "A",
-                "5m",
-                "now"
-              ]
-            },
-            "reducer": {
-              "params": [],
-              "type": "avg"
-            },
-            "type": "query"
-          }
-        ],
-        "executionErrorState": "alerting",
-        "frequency": "60s",
-        "handler": 1,
-        "name": "Free/Used Disk Space alert",
-        "noDataState": "keep_state",
-        "notifications": [
-          {
-            "id": 1
-          }
-        ]
-      },
       "datasource": {},
       "fieldConfig": {
         "defaults": {
@@ -1201,6 +1182,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.4.0-211378",
       "targets": [
         {
           "datasource": {
@@ -1232,40 +1214,6 @@
       "type": "timeseries"
     },
     {
-      "alert": {
-        "conditions": [
-          {
-            "evaluator": {
-              "params": [
-                10000000000
-              ],
-              "type": "gt"
-            },
-            "query": {
-              "params": [
-                "A",
-                "5m",
-                "now"
-              ]
-            },
-            "reducer": {
-              "params": [],
-              "type": "avg"
-            },
-            "type": "query"
-          }
-        ],
-        "executionErrorState": "alerting",
-        "frequency": "60s",
-        "handler": 1,
-        "name": "Available Memory alert",
-        "noDataState": "keep_state",
-        "notifications": [
-          {
-            "id": 1
-          }
-        ]
-      },
       "datasource": {},
       "fieldConfig": {
         "defaults": {
@@ -1387,6 +1335,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.4.0-211378",
       "targets": [
         {
           "datasource": {
@@ -1708,6 +1657,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.4.0-211378",
       "targets": [
         {
           "datasource": {
@@ -1832,6 +1782,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.4.0-211378",
       "targets": [
         {
           "datasource": {
@@ -1939,6 +1890,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.4.0-211378",
       "targets": [
         {
           "datasource": {
@@ -2046,6 +1998,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.4.0-211378",
       "targets": [
         {
           "datasource": {
@@ -2144,6 +2097,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.4.0-211378",
       "targets": [
         {
           "datasource": {
@@ -2205,7 +2159,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(245, 54, 54, 0.9)"
+                "color": "rgba(245, 54, 54, 0.9)",
+                "value": null
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -2246,7 +2201,7 @@
           }
         ]
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.4.0-211378",
       "targets": [
         {
           "datasource": {
@@ -2319,7 +2274,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(50, 172, 45, 0.97)"
+                "color": "rgba(50, 172, 45, 0.97)",
+                "value": null
               },
               {
                 "color": "green",
@@ -2368,7 +2324,7 @@
           }
         ]
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.4.0-211378",
       "targets": [
         {
           "datasource": {
@@ -2440,7 +2396,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(245, 54, 54, 0.9)"
+                "color": "rgba(245, 54, 54, 0.9)",
+                "value": null
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -2481,7 +2438,7 @@
           }
         ]
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.4.0-211378",
       "targets": [
         {
           "datasource": {
@@ -2582,7 +2539,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2613,6 +2571,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.4.0-211378",
       "targets": [
         {
           "datasource": {
@@ -2645,7 +2604,8 @@
       "type": "timeseries"
     }
   ],
-  "schemaVersion": 39,
+  "preload": false,
+  "schemaVersion": 40,
   "tags": [
     "DockerMon"
   ],
@@ -2654,7 +2614,6 @@
       {
         "allValue": ".+",
         "current": {
-          "selected": false,
           "text": "All",
           "value": "$__all"
         },
@@ -2663,7 +2622,6 @@
           "uid": "ce165k2x8n400d"
         },
         "definition": "",
-        "hide": 0,
         "includeAll": true,
         "label": "Container Group",
         "multi": true,
@@ -2672,8 +2630,6 @@
         "query": "label_values(container_group)",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
@@ -2681,21 +2637,12 @@
         "auto_count": 50,
         "auto_min": "50s",
         "current": {
-          "selected": false,
-          "text": "auto",
-          "value": "$__auto_interval_interval"
+          "text": "$__auto",
+          "value": "$__auto"
         },
-        "hide": 0,
-        "includeAll": false,
         "label": "Interval",
-        "multi": false,
         "name": "interval",
         "options": [
-          {
-            "selected": true,
-            "text": "auto",
-            "value": "$__auto_interval_interval"
-          },
           {
             "selected": false,
             "text": "30s",
@@ -2773,15 +2720,11 @@
           }
         ],
         "query": "30s,1m,2m,3m,5m,7m,10m,30m,1h,6h,12h,1d,7d,14d,30d",
-        "queryValue": "",
         "refresh": 2,
-        "skipUrlSync": false,
         "type": "interval"
       },
       {
         "current": {
-          "isNone": true,
-          "selected": false,
           "text": "None",
           "value": ""
         },
@@ -2790,7 +2733,6 @@
           "uid": "ce165k2x8n400d"
         },
         "definition": "",
-        "hide": 0,
         "includeAll": false,
         "label": "Node",
         "multi": true,
@@ -2799,44 +2741,18 @@
         "query": "label_values(node_boot_time, instance)",
         "refresh": 1,
         "regex": "/([^:]+):.*/",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       }
     ]
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-12h",
     "to": "now"
   },
-  "timepicker": {
-    "refresh_intervals": [
-      "5s",
-      "10s",
-      "30s",
-      "1m",
-      "5m",
-      "15m",
-      "30m",
-      "1h",
-      "2h",
-      "1d"
-    ],
-    "time_options": [
-      "5m",
-      "15m",
-      "1h",
-      "6h",
-      "12h",
-      "24h",
-      "2d",
-      "7d",
-      "30d"
-    ]
-  },
+  "timepicker": {},
   "timezone": "browser",
   "title": "Docker and system monitoring",
-  "uid": "adzyzc0dutedcc",
-  "version": 10,
+  "uid": "be5zfq1ec4w74a",
+  "version": 4,
   "weekStart": ""
 }
