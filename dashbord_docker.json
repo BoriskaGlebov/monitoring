@@ -1256,7 +1256,7 @@
             }
           },
           "mappings": [],
-          "max": 4000000000,
+          "max": 3000000000,
           "min": 0,
           "thresholds": {
             "mode": "absolute",
@@ -1267,7 +1267,7 @@
               },
               {
                 "color": "red",
-                "value": 3000000000.0001
+                "value": 2000000000.0001
               }
             ]
           },
@@ -1430,10 +1430,12 @@
             "type": "prometheus",
             "uid": "ce165k2x8n400d"
           },
-          "expr": "node_memory_MemAvailable",
-          "hide": true,
+          "editorMode": "code",
+          "expr": "node_memory_MemAvailable_bytes{instance=~\"node-exporter:9100\"}",
+          "hide": false,
           "intervalFactor": 2,
           "legendFormat": "Available Memory",
+          "range": true,
           "refId": "H",
           "step": 20
         },
@@ -1444,7 +1446,7 @@
           },
           "editorMode": "code",
           "expr": "node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes",
-          "hide": false,
+          "hide": true,
           "intervalFactor": 2,
           "legendFormat": "Unavailable Memory",
           "range": true,
@@ -2748,13 +2750,13 @@
     ]
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Docker and system monitoring",
   "uid": "be5zfq1ec4w74a",
-  "version": 11,
+  "version": 14,
   "weekStart": ""
 }
