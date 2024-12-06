@@ -264,11 +264,11 @@
       "id": 26,
       "maxDataPoints": 100,
       "options": {
-        "colorMode": "none",
-        "graphMode": "none",
+        "colorMode": "value",
+        "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "horizontal",
-        "percentChangeColorMode": "standard",
+        "percentChangeColorMode": "inverted",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -347,8 +347,8 @@
       "id": 25,
       "maxDataPoints": 100,
       "options": {
-        "colorMode": "none",
-        "graphMode": "none",
+        "colorMode": "value",
+        "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "horizontal",
         "percentChangeColorMode": "standard",
@@ -469,7 +469,7 @@
         "defaults": {
           "color": {
             "fixedColor": "rgb(69, 193, 31)",
-            "mode": "fixed"
+            "mode": "palette-classic"
           },
           "decimals": 0,
           "mappings": [
@@ -489,7 +489,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(245, 54, 54, 0.9)",
+                "color": "green",
                 "value": null
               },
               {
@@ -497,7 +497,7 @@
                 "value": 0.8
               },
               {
-                "color": "rgba(50, 172, 45, 0.97)",
+                "color": "red",
                 "value": 0.9
               }
             ]
@@ -515,7 +515,7 @@
       "id": 27,
       "maxDataPoints": 100,
       "options": {
-        "colorMode": "none",
+        "colorMode": "value",
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "horizontal",
@@ -852,12 +852,14 @@
             "type": "prometheus",
             "uid": "ce165k2x8n400d"
           },
+          "editorMode": "code",
           "expr": "sum(rate(process_cpu_seconds_total[$interval])) * 100",
           "hide": false,
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "host",
           "metric": "",
+          "range": true,
           "refId": "C",
           "step": 600
         },
@@ -1071,7 +1073,7 @@
             }
           },
           "mappings": [],
-          "max": 1000000000000,
+          "max": 40000000000,
           "min": 0,
           "thresholds": {
             "mode": "absolute",
@@ -1082,7 +1084,7 @@
               },
               {
                 "color": "red",
-                "value": 850000000000
+                "value": 32000000000
               }
             ]
           },
@@ -1254,7 +1256,7 @@
             }
           },
           "mappings": [],
-          "max": 16000000000,
+          "max": 4000000000,
           "min": 0,
           "thresholds": {
             "mode": "absolute",
@@ -1265,7 +1267,7 @@
               },
               {
                 "color": "red",
-                "value": 10000000000
+                "value": 3000000000.0001
               }
             ]
           },
@@ -2746,13 +2748,13 @@
     ]
   },
   "time": {
-    "from": "now-12h",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Docker and system monitoring",
   "uid": "be5zfq1ec4w74a",
-  "version": 4,
+  "version": 11,
   "weekStart": ""
 }
