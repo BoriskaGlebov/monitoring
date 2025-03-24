@@ -114,13 +114,30 @@
             "uid": "ce165k2x8n400d"
           },
           "editorMode": "code",
-          "expr": "time() - node_boot_time_seconds{instance=~\"node-exporter:9100\"}",
+          "expr": "time() - node_boot_time_seconds{instance=~\"$server:9100\"}",
           "hide": false,
           "intervalFactor": 2,
           "legendFormat": "",
           "range": true,
           "refId": "A",
           "step": 1800
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "be64vevi17280e"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "time() - node_boot_time_seconds{instance=~\"$server:9100\"}",
+          "fullMetaSearch": false,
+          "hide": true,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B",
+          "useBackend": false
         }
       ],
       "title": "Uptime",
@@ -161,7 +178,7 @@
               },
               {
                 "color": "dark-green",
-                "value": 8
+                "value": 6
               },
               {
                 "color": "#6ED0E0",
@@ -292,7 +309,7 @@
             "uid": "ce165k2x8n400d"
           },
           "editorMode": "code",
-          "expr": "min((node_filesystem_size_bytes{fstype=~\"xfs|ext4\",instance=~\"node-exporter:9100\"} - node_filesystem_free_bytes{fstype=~\"xfs|ext4\",instance=~\"node-exporter:9100\"} )/ node_filesystem_size_bytes{fstype=~\"xfs|ext4\",instance=~\"node-exporter:9100\"})",
+          "expr": "min((node_filesystem_size_bytes{fstype=~\"xfs|ext4\",instance=~\"$server:9100\"} - node_filesystem_free_bytes{fstype=~\"xfs|ext4\",instance=~\"$server:9100\"} )/ node_filesystem_size_bytes{fstype=~\"xfs|ext4\",instance=~\"$server:9100\"})",
           "hide": false,
           "intervalFactor": 2,
           "range": true,
@@ -383,8 +400,8 @@
             "uid": "ce165k2x8n400d"
           },
           "editorMode": "code",
-          "expr": "((node_memory_MemTotal_bytes{instance=~\"node-exporter:9100\"}-node_memory_MemFree_bytes{instance=~\"node-exporter:9100\"}) / node_memory_MemTotal_bytes{instance=~\"node-exporter:9100\"}) * 100",
-          "hide": false,
+          "expr": "((node_memory_MemTotal_bytes{instance=~\"$server:9100\"}-node_memory_MemFree_bytes{instance=~\"$server:9100\"}) / node_memory_MemTotal_bytes{instance=~\"$server:9100\"}) * 100",
+          "hide": true,
           "intervalFactor": 2,
           "range": true,
           "refId": "A",
@@ -415,6 +432,19 @@
           "legendFormat": "__auto",
           "range": true,
           "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "be64vevi17280e"
+          },
+          "editorMode": "code",
+          "expr": "(1 - (node_memory_MemAvailable_bytes{instance=~\"$server:9100\"} / node_memory_MemTotal_bytes{instance=~\"$server:9100\"})) * 100",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "D"
         }
       ],
       "title": "Memory",
@@ -491,7 +521,7 @@
             "uid": "ce165k2x8n400d"
           },
           "editorMode": "code",
-          "expr": "(node_memory_SwapTotal_bytes{instance=~'node-exporter:9100'} - node_memory_SwapFree_bytes{instance=~'node-exporter:9100'})",
+          "expr": "(node_memory_SwapTotal_bytes{instance=~\"$server:9100\"} - node_memory_SwapFree_bytes{instance=~\"$server:9100\"})",
           "intervalFactor": 2,
           "legendFormat": "",
           "range": true,
@@ -582,7 +612,7 @@
             "uid": "ce165k2x8n400d"
           },
           "editorMode": "code",
-          "expr": "node_load1{instance=~'node-exporter:9100'} / count by(job, instance)(count by(job, instance, cpu)(node_cpu_seconds_total{instance=~'node-exporter:9100'}))",
+          "expr": "node_load1{instance=~\"$server:9100\"} / count by(job, instance)(count by(job, instance, cpu)(node_cpu_seconds_total{instance=~\"$server:9100\"}))",
           "hide": true,
           "intervalFactor": 2,
           "range": true,
@@ -1021,7 +1051,7 @@
             "uid": "ce165k2x8n400d"
           },
           "editorMode": "code",
-          "expr": "node_load1{instance=~\"node-exporter:9100\"} / count by(job, instance)(count by(job, instance, cpu)(node_cpu_seconds_total{instance=~\"node-exporter:9100\"}))",
+          "expr": "node_load1{instance=~\"$server:9100\"} / count by(job, instance)(count by(job, instance, cpu)(node_cpu_seconds_total{instance=~\"$server:9100\"}))",
           "hide": true,
           "intervalFactor": 2,
           "range": true,
@@ -1478,7 +1508,7 @@
             "uid": "ce165k2x8n400d"
           },
           "editorMode": "code",
-          "expr": "node_memory_MemFree_bytes{instance=~\"node-exporter:9100\"}",
+          "expr": "node_memory_MemAvailable_bytes{instance=~\"node-exporter:9100\"}",
           "hide": false,
           "intervalFactor": 2,
           "legendFormat": "Available Memory",
@@ -2211,8 +2241,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(245, 54, 54, 0.9)",
-                "value": null
+                "color": "rgba(245, 54, 54, 0.9)"
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -2327,8 +2356,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(50, 172, 45, 0.97)",
-                "value": null
+                "color": "rgba(50, 172, 45, 0.97)"
               },
               {
                 "color": "green",
@@ -2449,8 +2477,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(245, 54, 54, 0.9)",
-                "value": null
+                "color": "rgba(245, 54, 54, 0.9)"
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -2593,8 +2620,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2665,27 +2691,6 @@
   ],
   "templating": {
     "list": [
-      {
-        "allValue": ".+",
-        "current": {
-          "text": "All",
-          "value": "$__all"
-        },
-        "datasource": {
-          "type": "prometheus",
-          "uid": "ce165k2x8n400d"
-        },
-        "definition": "",
-        "includeAll": true,
-        "label": "Container Group",
-        "multi": true,
-        "name": "containergroup",
-        "options": [],
-        "query": "label_values(container_group)",
-        "refresh": 1,
-        "regex": "",
-        "type": "query"
-      },
       {
         "auto": true,
         "auto_count": 50,
@@ -2779,34 +2784,32 @@
       },
       {
         "current": {
-          "text": "None",
-          "value": ""
+          "text": "node-exporter",
+          "value": "node-exporter"
         },
-        "datasource": {
-          "type": "prometheus",
-          "uid": "ce165k2x8n400d"
-        },
-        "definition": "",
-        "includeAll": false,
-        "label": "Node",
-        "multi": true,
+        "description": "",
+        "label": "server",
         "name": "server",
-        "options": [],
-        "query": "label_values(node_boot_time, instance)",
-        "refresh": 1,
-        "regex": "/([^:]+):.*/",
-        "type": "query"
+        "options": [
+          {
+            "selected": true,
+            "text": "node-exporter",
+            "value": "node-exporter"
+          }
+        ],
+        "query": "node-exporter",
+        "type": "custom"
       }
     ]
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Docker and system monitoring",
   "uid": "be64vevi17280e",
-  "version": 14,
+  "version": 29,
   "weekStart": ""
 }
