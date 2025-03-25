@@ -25,13 +25,13 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": 2,
+  "id": 1,
   "links": [],
   "panels": [
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "fegwtmoklezggd"
+        "uid": "aegxc60gubv28d"
       },
       "fieldConfig": {
         "defaults": {
@@ -97,7 +97,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "fegwtmoklezggd"
+            "uid": "aegxc60gubv28d"
           },
           "expr": "time() - node_boot_time_seconds{instance=~\"$server:.*\"}",
           "hide": false,
@@ -113,7 +113,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "fegwtmoklezggd"
+        "uid": "aegxc60gubv28d"
       },
       "description": "Показывает количество запущенных контейнеров",
       "fieldConfig": {
@@ -189,10 +189,10 @@
       "pluginVersion": "11.5.2",
       "targets": [
         {
-          "datasource": "fegwtmoklezggd",
+          "datasource": "aegxc60gubv28d",
           "editorMode": "code",
           "expr": "count(rate(container_last_seen{name=~\".+\"}[$interval]))",
-          "hide": true,
+          "hide": false,
           "intervalFactor": 2,
           "range": true,
           "refId": "A",
@@ -201,11 +201,11 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "fegwtmoklezggd"
+            "uid": "aegxc60gubv28d"
           },
           "editorMode": "code",
           "expr": "count(container_last_seen{name=~\".+\"})",
-          "hide": false,
+          "hide": true,
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -218,7 +218,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "fegwtmoklezggd"
+        "uid": "aegxc60gubv28d"
       },
       "description": "Загруженность сервера по количеству процессоров",
       "fieldConfig": {
@@ -257,6 +257,14 @@
               {
                 "color": "rgba(50, 172, 45, 0.97)",
                 "value": 0.9
+              },
+              {
+                "color": "orange",
+                "value": 1.5
+              },
+              {
+                "color": "red",
+                "value": 2.1
               }
             ]
           },
@@ -294,7 +302,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "fegwtmoklezggd"
+            "uid": "aegxc60gubv28d"
           },
           "editorMode": "code",
           "expr": "node_load1{instance=~\"$server:.*\"} / count by(job, instance)(count by(job, instance, cpu)(node_cpu_seconds_total{instance=~\"$server:.*\"}))",
@@ -307,7 +315,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "fegwtmoklezggd"
+            "uid": "aegxc60gubv28d"
           },
           "editorMode": "code",
           "expr": "node_load1{instance=~\"$server:.*\"} \n/ count by(job, instance)(count by(job, instance, cpu)(rate(node_cpu_seconds_total{instance=~\"$server:.*\"}[5m])))",
@@ -324,7 +332,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "fegwtmoklezggd"
+        "uid": "aegxc60gubv28d"
       },
       "description": "Минимальный процент использования диска среди всех разделов ",
       "fieldConfig": {
@@ -399,7 +407,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "fegwtmoklezggd"
+            "uid": "aegxc60gubv28d"
           },
           "editorMode": "code",
           "expr": "min((node_filesystem_size_bytes{fstype=~\"xfs|ext4\",instance=~\"$server:.*\"} - node_filesystem_free_bytes{fstype=~\"xfs|ext4\",instance=~\"$server:.*\"} )/ node_filesystem_size_bytes{fstype=~\"xfs|ext4\",instance=~\"$server:.*\"})",
@@ -416,7 +424,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "fegwtmoklezggd"
+        "uid": "aegxc60gubv28d"
       },
       "description": "показывает процент использованной памяти на сервере ",
       "fieldConfig": {
@@ -491,7 +499,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "fegwtmoklezggd"
+            "uid": "aegxc60gubv28d"
           },
           "editorMode": "code",
           "expr": "((node_memory_MemTotal_bytes{instance=~\"$server:.*\"} - node_memory_MemAvailable_bytes{instance=~\"$server:.*\"}) / node_memory_MemTotal_bytes{instance=~\"$server:.*\"}) * 100",
@@ -507,7 +515,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "fegwtmoklezggd"
+        "uid": "aegxc60gubv28d"
       },
       "description": "",
       "fieldConfig": {
@@ -574,7 +582,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "fegwtmoklezggd"
+            "uid": "aegxc60gubv28d"
           },
           "editorMode": "code",
           "expr": "(node_memory_SwapTotal_bytes{instance=~'$server:.*'} - node_memory_SwapFree_bytes{instance=~'$server:.*'})",
@@ -591,7 +599,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "fegwtmoklezggd"
+        "uid": "aegxc60gubv28d"
       },
       "fieldConfig": {
         "defaults": {
@@ -728,7 +736,7 @@
       "pluginVersion": "11.5.2",
       "targets": [
         {
-          "datasource": "fegwtmoklezggd",
+          "datasource": "aegxc60gubv28d",
           "expr": "sum(rate(container_network_receive_bytes_total{id=\"/\"}[$interval])) by (id)",
           "intervalFactor": 2,
           "legendFormat": "RECEIVED",
@@ -736,7 +744,7 @@
           "step": 600
         },
         {
-          "datasource": "fegwtmoklezggd",
+          "datasource": "aegxc60gubv28d",
           "expr": "- sum(rate(container_network_transmit_bytes_total{id=\"/\"}[$interval])) by (id)",
           "hide": false,
           "intervalFactor": 2,
@@ -751,7 +759,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "fegwtmoklezggd"
+        "uid": "aegxc60gubv28d"
       },
       "fieldConfig": {
         "defaults": {
@@ -888,7 +896,7 @@
       "pluginVersion": "11.5.2",
       "targets": [
         {
-          "datasource": "fegwtmoklezggd",
+          "datasource": "aegxc60gubv28d",
           "expr": "sum(rate(container_cpu_system_seconds_total[1m]))",
           "hide": true,
           "intervalFactor": 2,
@@ -897,7 +905,7 @@
           "step": 120
         },
         {
-          "datasource": "fegwtmoklezggd",
+          "datasource": "aegxc60gubv28d",
           "expr": "sum(rate(container_cpu_system_seconds_total{name=~\".+\"}[1m]))",
           "hide": true,
           "interval": "",
@@ -907,7 +915,7 @@
           "step": 10
         },
         {
-          "datasource": "fegwtmoklezggd",
+          "datasource": "aegxc60gubv28d",
           "expr": "sum(rate(container_cpu_system_seconds_total{id=\"/\"}[1m]))",
           "hide": true,
           "interval": "",
@@ -918,7 +926,7 @@
           "step": 20
         },
         {
-          "datasource": "fegwtmoklezggd",
+          "datasource": "aegxc60gubv28d",
           "expr": "sum(rate(process_cpu_seconds_total[$interval])) * 100",
           "hide": false,
           "interval": "",
@@ -929,7 +937,7 @@
           "step": 600
         },
         {
-          "datasource": "fegwtmoklezggd",
+          "datasource": "aegxc60gubv28d",
           "expr": "sum(rate(container_cpu_system_seconds_total{name=~\".+\"}[1m])) + sum(rate(container_cpu_system_seconds_total{id=\"/\"}[1m])) + sum(rate(process_cpu_seconds_total[1m]))",
           "hide": true,
           "intervalFactor": 2,
@@ -944,7 +952,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "fegwtmoklezggd"
+        "uid": "aegxc60gubv28d"
       },
       "fieldConfig": {
         "defaults": {
@@ -1057,7 +1065,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "fegwtmoklezggd"
+            "uid": "aegxc60gubv28d"
           },
           "editorMode": "code",
           "expr": "node_load1{instance=~\"$server:.*\"} \n/ count by(job, instance)(count by(job, instance, cpu)(rate(node_cpu_seconds_total{instance=~\"$server:.*\"}[5m])))",
@@ -1073,7 +1081,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "fegwtmoklezggd"
+        "uid": "aegxc60gubv28d"
       },
       "fieldConfig": {
         "defaults": {
@@ -1117,7 +1125,7 @@
             }
           },
           "mappings": [],
-          "max": 160000000000,
+          "max": 32000000000,
           "min": 0,
           "thresholds": {
             "mode": "percentage",
@@ -1164,12 +1172,11 @@
         }
       },
       "pluginVersion": "11.5.2",
-      "repeatDirection": "h",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "fegwtmoklezggd"
+            "uid": "aegxc60gubv28d"
           },
           "editorMode": "code",
           "expr": "node_filesystem_size_bytes{fstype=~\"ext4|xfs\"} - node_filesystem_free_bytes{fstype=~\"xfs|ext4\"}",
@@ -1183,7 +1190,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "fegwtmoklezggd"
+            "uid": "aegxc60gubv28d"
           },
           "editorMode": "code",
           "expr": "node_filesystem_size_bytes{fstype=~\"ext4|xfs\"}",
@@ -1196,7 +1203,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "fegwtmoklezggd"
+            "uid": "aegxc60gubv28d"
           },
           "editorMode": "code",
           "expr": "node_filesystem_free_bytes{fstype=~\"xfs|ext4\"}",
@@ -1213,7 +1220,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "fegwtmoklezggd"
+        "uid": "aegxc60gubv28d"
       },
       "fieldConfig": {
         "defaults": {
@@ -1382,7 +1389,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "fegwtmoklezggd"
+            "uid": "aegxc60gubv28d"
           },
           "expr": "-sum(rate(node_disk_read_bytes_total[$interval])) by (device)",
           "hide": false,
@@ -1395,7 +1402,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "fegwtmoklezggd"
+            "uid": "aegxc60gubv28d"
           },
           "editorMode": "code",
           "expr": "sum(rate(node_disk_written_bytes_total[$interval])) by (device)",
@@ -1413,7 +1420,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "fegwtmoklezggd"
+        "uid": "aegxc60gubv28d"
       },
       "fieldConfig": {
         "defaults": {
@@ -1495,7 +1502,7 @@
       "pluginVersion": "11.5.2",
       "targets": [
         {
-          "datasource": "fegwtmoklezggd",
+          "datasource": "aegxc60gubv28d",
           "expr": "sum(rate(container_network_receive_bytes_total{name=~\".+\"}[$interval])) by (name)",
           "intervalFactor": 2,
           "legendFormat": "{{name}}",
@@ -1503,7 +1510,7 @@
           "step": 240
         },
         {
-          "datasource": "fegwtmoklezggd",
+          "datasource": "aegxc60gubv28d",
           "expr": "- rate(container_network_transmit_bytes_total{name=~\".+\"}[$interval])",
           "hide": true,
           "intervalFactor": 2,
@@ -1518,7 +1525,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "fegwtmoklezggd"
+        "uid": "aegxc60gubv28d"
       },
       "fieldConfig": {
         "defaults": {
@@ -1600,7 +1607,7 @@
       "pluginVersion": "11.5.2",
       "targets": [
         {
-          "datasource": "fegwtmoklezggd",
+          "datasource": "aegxc60gubv28d",
           "expr": "sum(rate(container_network_transmit_bytes_total{name=~\".+\"}[$interval])) by (name)",
           "intervalFactor": 2,
           "legendFormat": "{{name}}",
@@ -1608,7 +1615,7 @@
           "step": 240
         },
         {
-          "datasource": "fegwtmoklezggd",
+          "datasource": "aegxc60gubv28d",
           "expr": "rate(container_network_transmit_bytes_total{id=\"/\"}[$interval])",
           "hide": true,
           "intervalFactor": 2,
@@ -1623,7 +1630,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "fegwtmoklezggd"
+        "uid": "aegxc60gubv28d"
       },
       "fieldConfig": {
         "defaults": {
@@ -1705,7 +1712,7 @@
       "pluginVersion": "11.5.2",
       "targets": [
         {
-          "datasource": "fegwtmoklezggd",
+          "datasource": "aegxc60gubv28d",
           "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\".+\"}[$interval])) by (name) * 100",
           "hide": false,
           "interval": "",
@@ -1722,7 +1729,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "fegwtmoklezggd"
+        "uid": "aegxc60gubv28d"
       },
       "fieldConfig": {
         "defaults": {
@@ -1804,7 +1811,7 @@
       "pluginVersion": "11.5.2",
       "targets": [
         {
-          "datasource": "fegwtmoklezggd",
+          "datasource": "aegxc60gubv28d",
           "expr": "sum(container_memory_rss{name=~\".+\"}) by (name)",
           "hide": false,
           "intervalFactor": 2,
@@ -1813,7 +1820,7 @@
           "step": 240
         },
         {
-          "datasource": "fegwtmoklezggd",
+          "datasource": "aegxc60gubv28d",
           "expr": "container_memory_usage_bytes{name=~\".+\"}",
           "hide": true,
           "intervalFactor": 2,
@@ -1828,7 +1835,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "fegwtmoklezggd"
+        "uid": "aegxc60gubv28d"
       },
       "fieldConfig": {
         "defaults": {
@@ -1888,7 +1895,7 @@
         ]
       },
       "gridPos": {
-        "h": 11,
+        "h": 13,
         "w": 9,
         "x": 0,
         "y": 24
@@ -1918,10 +1925,9 @@
         ]
       },
       "pluginVersion": "11.5.2",
-      "repeatDirection": "h",
       "targets": [
         {
-          "datasource": "fegwtmoklezggd",
+          "datasource": "aegxc60gubv28d",
           "expr": "sum(container_spec_memory_limit_bytes{name=~\".+\"} - container_memory_usage_bytes{name=~\".+\"}) by (name) ",
           "hide": true,
           "intervalFactor": 2,
@@ -1931,7 +1937,7 @@
           "step": 240
         },
         {
-          "datasource": "fegwtmoklezggd",
+          "datasource": "aegxc60gubv28d",
           "editorMode": "code",
           "expr": "sum(container_spec_memory_limit_bytes{name=~\".+\"}) by (name) ",
           "hide": true,
@@ -1942,7 +1948,7 @@
           "step": 240
         },
         {
-          "datasource": "fegwtmoklezggd",
+          "datasource": "aegxc60gubv28d",
           "editorMode": "code",
           "expr": "container_memory_usage_bytes{name=~\".+\"}",
           "hide": true,
@@ -1955,7 +1961,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "fegwtmoklezggd"
+            "uid": "aegxc60gubv28d"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -1992,7 +1998,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "fegwtmoklezggd"
+        "uid": "aegxc60gubv28d"
       },
       "fieldConfig": {
         "defaults": {
@@ -2054,7 +2060,7 @@
         ]
       },
       "gridPos": {
-        "h": 11,
+        "h": 13,
         "w": 7,
         "x": 9,
         "y": 24
@@ -2106,7 +2112,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "fegwtmoklezggd"
+        "uid": "aegxc60gubv28d"
       },
       "fieldConfig": {
         "defaults": {
@@ -2140,7 +2146,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 11,
+        "h": 13,
         "w": 8,
         "x": 16,
         "y": 24
@@ -2164,7 +2170,7 @@
         {
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(container_spec_memory_limit_bytes{name=~\".+\"})by (name) ",
+          "expr": "sum(container_spec_memory_limit_bytes{name=~\".+\"}) by (name) ",
           "format": "table",
           "instant": true,
           "legendFormat": "{{name}}",
@@ -2191,7 +2197,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "fegwtmoklezggd"
+        "uid": "aegxc60gubv28d"
       },
       "fieldConfig": {
         "defaults": {
@@ -2253,7 +2259,7 @@
         "h": 7,
         "w": 12,
         "x": 4,
-        "y": 35
+        "y": 37
       },
       "id": 34,
       "options": {
@@ -2273,7 +2279,7 @@
       "pluginVersion": "11.5.2",
       "targets": [
         {
-          "datasource": "fegwtmoklezggd",
+          "datasource": "aegxc60gubv28d",
           "expr": "sum(container_memory_swap{name=~\".+\"}) by (name)",
           "hide": false,
           "intervalFactor": 2,
@@ -2282,7 +2288,7 @@
           "step": 240
         },
         {
-          "datasource": "fegwtmoklezggd",
+          "datasource": "aegxc60gubv28d",
           "expr": "container_memory_usage_bytes{name=~\".+\"}",
           "hide": true,
           "intervalFactor": 2,
@@ -2309,7 +2315,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "fegwtmoklezggd"
+          "uid": "aegxc60gubv28d"
         },
         "definition": "",
         "includeAll": true,
@@ -2419,19 +2425,19 @@
       {
         "current": {
           "text": [
-            "192.168.1.71"
+            "91.149.219.221"
           ],
           "value": [
-            "192.168.1.71"
+            "91.149.219.221"
           ]
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "fegwtmoklezggd"
+          "uid": "aegxc60gubv28d"
         },
         "definition": "label_values(node_boot_time_seconds, instance)",
         "includeAll": false,
-        "label": "Node",
+        "label": "server",
         "multi": true,
         "name": "server",
         "options": [],
@@ -2442,26 +2448,17 @@
         "refresh": 1,
         "regex": "/([^:]+):.*/",
         "type": "query"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "fegwtmoklezggd"
-        },
-        "filters": [],
-        "name": "Filters",
-        "type": "adhoc"
       }
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Docker and system monitoring (nodeexporter v1.3.1)",
   "uid": "BiigkBu7k",
-  "version": 29,
+  "version": 9,
   "weekStart": ""
 }
