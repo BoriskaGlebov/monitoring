@@ -83,6 +83,9 @@ services:
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SERVER_ROOT_URL=http://vpn-boriska.ru/grafana/
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+
     restart: unless-stopped
     volumes:
       - grafana_data:/var/lib/grafana
@@ -95,6 +98,27 @@ services:
           memory: 256M
     networks:
       - monitoring_net
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - grafana
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          memory: 256M
+    networks:
+      - monitoring_net
+
 #
 volumes:
   grafana_data:
