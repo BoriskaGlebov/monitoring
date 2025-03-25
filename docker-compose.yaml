@@ -104,8 +104,10 @@ services:
     container_name: nginx
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certs:/etc/letsencrypt:ro # Путь к сертификатам, если используете Certbot
     ports:
-      - "80:80"
+      - "80:80"  # HTTP порт
+      - "443:443" # HTTPS порт
     depends_on:
       - grafana
     restart: unless-stopped
@@ -118,6 +120,7 @@ services:
           memory: 256M
     networks:
       - monitoring_net
+
 
 #
 volumes:
