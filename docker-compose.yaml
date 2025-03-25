@@ -106,6 +106,7 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - /var/www/certbot:/var/www/certbot:ro   # Монтируем директорию с хоста
       - /etc/letsencrypt:/etc/letsencrypt:ro # Путь к сертификатам, если используете Certbot
+      - /etc/ssl/certs/dhparam.pem:/etc/ssl/certs/dhparam.pem:ro  # Монтируем файл DH параметров
     ports:
       - "80:80"  # HTTP порт
       - "443:443" # HTTPS порт
