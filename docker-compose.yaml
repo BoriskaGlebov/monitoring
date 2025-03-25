@@ -61,8 +61,8 @@ services:
       - '--path.procfs=/host/proc'
       - '--path.sysfs=/host/sys'
       - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
-    ports:
-      - "127.0.0.1:9100:9100"
+#    ports:
+#      - "127.0.0.1:9100:9100"
     restart: unless-stopped
     deploy:
       resources:
@@ -104,6 +104,7 @@ services:
     container_name: nginx
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - /var/www/certbot:/var/www/certbot:ro   # Монтируем директорию с хоста
       - ./certs:/etc/letsencrypt:ro # Путь к сертификатам, если используете Certbot
     ports:
       - "80:80"  # HTTP порт
