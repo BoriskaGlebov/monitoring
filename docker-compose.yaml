@@ -3,8 +3,8 @@ services:
   prometheus:
     image: prom/prometheus:main
     container_name: prometheus
-#    ports:
-#      - "9090:9090"
+    ports:
+      - "9090:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
@@ -37,8 +37,8 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
       - /cgroup:/cgroup:ro
     restart: unless-stopped
-#    ports:
-#      - "8080:8080"
+    ports:
+      - "8080:8080"
     deploy:
       resources:
         limits:
@@ -71,10 +71,10 @@ services:
           memory: 512M
         reservations:
           memory: 256M
-#    networks:
-#      - monitoring_net
+    #    networks:
+    #      - monitoring_net
     network_mode: host
-#
+  #
   grafana:
     image: grafana/grafana:11.5.2
     container_name: grafana
@@ -89,7 +89,7 @@ services:
     deploy:
       resources:
         limits:
-          #          cpus: '1'
+          cpus: '1'
           memory: 512M
         reservations:
           memory: 256M
