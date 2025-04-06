@@ -15,7 +15,7 @@ services:
       - /cgroup:/cgroup:ro
     restart: unless-stopped
     ports:
-      - "127.0.0.1:8080:8080"
+      - "8080:8080"
     deploy:
       resources:
         limits:
@@ -39,7 +39,7 @@ services:
       - '--path.sysfs=/host/sys'
       - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
     ports:
-      - "127.0.0.1:9100:9100"
+      - "9100:9100"
     restart: unless-stopped
     deploy:
       resources:
