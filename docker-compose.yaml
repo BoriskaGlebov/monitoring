@@ -3,8 +3,8 @@ services:
   prometheus:
     image: prom/prometheus:main
     container_name: prometheus
-#    ports:
-#      - "127.0.0.1:9090:9090"
+    ports:
+      - "127.0.0.1:9090:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
@@ -20,9 +20,8 @@ services:
           memory: 512M
         reservations:
           memory: 256M
-#    networks:
-#      - monitoring_net
-    network_mode: host
+    networks:
+      - monitoring_net
 
   cadvisor:
     # cAdvisor собирает данные о ресурсах и производительности контейнеров
