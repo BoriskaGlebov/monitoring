@@ -21,8 +21,8 @@ services:
           memory: 512M
         reservations:
           memory: 256M
-    networks:
-      - monitoring_net
+#    networks:
+#      - monitoring_net
     network_mode: host
   cadvisor:
     # cAdvisor собирает данные о ресурсах и производительности контейнеров
