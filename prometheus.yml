@@ -10,7 +10,7 @@ scrape_configs:
       - targets: [ 'cadvisor:8080','cadvisor_server2:8080' ]
   - job_name: 'node-exporter'
     static_configs:
-      - targets: ['91.149.219.221:9100','45.147.200.5:9100']
+      - targets: ['91.149.219.221:9100','45.147.200.5:19100']
 
 
 
