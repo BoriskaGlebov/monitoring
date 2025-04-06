@@ -38,8 +38,8 @@ services:
       - '--path.procfs=/host/proc'
       - '--path.sysfs=/host/sys'
       - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
-    #    ports:
-    #      - "127.0.0.1:9100:9100"
+    ports:
+      - "127.0.0.1:9100:9100"
     restart: unless-stopped
     deploy:
       resources:
@@ -48,9 +48,9 @@ services:
           memory: 512M
         reservations:
           memory: 256M
-    #    networks:
-    #      - monitoring_net
-    network_mode: host
+    networks:
+      - monitoring_net
+#    network_mode: host
 
 networks:
   monitoring_net:
