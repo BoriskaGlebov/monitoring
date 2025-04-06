@@ -1,6 +1,6 @@
 services:
 
-  cadvisor:
+  cadvisor_server2:
     # cAdvisor собирает данные о ресурсах и производительности контейнеров
     image: gcr.io/cadvisor/cadvisor:latest
     container_name: cadvisor
@@ -26,7 +26,7 @@ services:
     networks:
       - monitoring_net
 
-  node-exporter:
+  node-exporter-server2:
     #Сбор системных метрик
     image: prom/node-exporter:latest
     container_name: node-exporter
