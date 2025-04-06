@@ -21,8 +21,8 @@ services:
         reservations:
           memory: 256M
     network_mode: "host"  # Подключаем контейнер к сети хоста
-    networks:
-      - monitoring_net
+#    networks:
+#      - monitoring_net
 
   cadvisor:
     # cAdvisor собирает данные о ресурсах и производительности контейнеров
