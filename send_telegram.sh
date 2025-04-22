@@ -10,14 +10,15 @@ COMPOSE_PATH="/home/prod_server/production/monitoring/docker-compose.yaml"
 # Выполняем обновление и сохраняем вывод
 OUTPUT=$(certbot renew --deploy-hook "docker compose -f $COMPOSE_PATH restart nginx" 2>&1)
 EXIT_CODE=$?
-
+# Получаем имя хоста
+SERVER_NAME="vpn-boriska"
 # Проверка по содержимому вывода
 if [[ $EXIT_CODE -ne 0 ]]; then
-    MESSAGE="❌ Ошибка при обновлении сертификатов:\n$OUTPUT"
+    MESSAGE="❌ *[$SERVER_NAME]* - ошибка при обновлении сертификатов:\n$OUTPUT"
 elif echo "$OUTPUT" | grep -q "No renewals were attempted"; then
-    MESSAGE="ℹ️ Сертификаты не требуют обновления. Всё в порядке."
+    MESSAGE="ℹ️ *[$SERVER_NAME]* - сертификаты не требуют обновления. Всё в порядке."
 elif echo "$OUTPUT" | grep -q "Congratulations, all renewals succeeded"; then
-    MESSAGE="✅ Сертификат(ы) были обновлены и nginx перезапущен."
+    MESSAGE="✅ *[$SERVER_NAME]* -  сертификат(ы) были обновлены и nginx перезапущен."
 else
     MESSAGE="⚠️ Неизвестный результат обновления:\n$OUTPUT"
 fi
