@@ -9,7 +9,6 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
     restart: unless-stopped
-
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.retention.time=30d'   # Время хранения на 30 дней
@@ -18,11 +17,12 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 512M
+          memory: 1024M
         reservations:
           memory: 256M
     networks:
       - monitoring_net
+
   cadvisor:
     # cAdvisor собирает данные о ресурсах и производительности контейнеров
     image: gcr.io/cadvisor/cadvisor:latest
