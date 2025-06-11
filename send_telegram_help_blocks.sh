@@ -4,7 +4,7 @@
 
 WEBHOOK_URL="https://api.telegram.org/bot6796421307:AAHmQ9jvbJl9kslUnPR5W5beV5ECAuesWAs/sendMessage"
 CHAT_ID="439653349"
-COMPOSE_PATH="/home/prod_server/production/monitoring/docker-compose.yaml"
+COMPOSE_PATH="/home/bot_server/test_zone/Help-Blocks/docker-compose.test.yaml"
 
 
 # Выполняем обновление и сохраняем вывод
