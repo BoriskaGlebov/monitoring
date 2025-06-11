@@ -8,7 +8,7 @@ COMPOSE_PATH="/home/bot_server/test_zone/Help-Blocks/docker-compose.test.yaml"
 
 
 # Выполняем обновление и сохраняем вывод
-OUTPUT=$(certbot renew --deploy-hook "docker compose -f $COMPOSE_PATH restart nginx" 2>&1)
+OUTPUT=$(certbot renew --dry-run --deploy-hook "docker compose -f $COMPOSE_PATH restart nginx" 2>&1)
 EXIT_CODE=$?
 # Получаем имя хоста
 SERVER_NAME="help-blocks"
