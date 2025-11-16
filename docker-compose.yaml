@@ -110,8 +110,6 @@ services:
     ports:
       - "80:80"  # HTTP порт
       - "443:443" # HTTPS порт
-    depends_on:
-      - grafana
     restart: unless-stopped
     deploy:
       resources:
