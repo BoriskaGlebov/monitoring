@@ -28,7 +28,10 @@ services:
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
     ports:
-      - "8080:8080"
+      - target: 8080
+        published: 8080
+        protocol: tcp
+        mode: host
     privileged: true
     volumes:
       - /:/rootfs:ro
@@ -60,7 +63,10 @@ services:
           cpus: "1"
           memory: 512M
     ports:
-      - "9100:9100"
+      - target: 9100
+        published: 9100
+        protocol: tcp
+        mode: host
     networks:
       - monitoring_net
 
