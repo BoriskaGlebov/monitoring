@@ -34,9 +34,4 @@ jobs:
             cd production/monitoring || exit  # Переход в директорию приложения
             git pull origin main            # Обновление кода из репозитория
             docker stack deploy -c docker-stack.yml monitoring
-            docker service update --force monitoring_prometheus
-            docker service update --force monitoring_cadvisor
-            docker service update --force monitoring_node-exporter
-            docker service update --force monitoring_grafana
-            docker service update --force monitoring_nginx
             EOF
