@@ -119,4 +119,5 @@ volumes:
 
 networks:
   monitoring_net:
-    driver: overlay
+    external: true
+    name: shared_net
