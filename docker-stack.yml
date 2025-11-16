@@ -107,7 +107,9 @@ services:
 
 volumes:
   grafana_data:
+    name: grafana_vol
   prometheus_data:
+    name: prometheus_data
 
 networks:
   monitoring_net:
