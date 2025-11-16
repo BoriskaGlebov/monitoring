@@ -26,7 +26,7 @@ services:
       - monitoring_net
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:latest
+    image: bitnami/cadvisor:latest
     ports:
       - target: 8080
         published: 8080
