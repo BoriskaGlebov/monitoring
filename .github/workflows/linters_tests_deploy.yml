@@ -33,7 +33,7 @@ jobs:
             ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
             cd production/monitoring || exit  # Переход в директорию приложения
             git pull origin main            # Обновление кода из репозитория
-#            docker stack deploy -c docker-stack.yml monitoring
+            docker stack deploy -c docker-stack.yml monitoring
             docker service update --force monitoring_prometheus
             docker service update --force monitoring_cadvisor
             docker service update --force monitoring_node-exporter
