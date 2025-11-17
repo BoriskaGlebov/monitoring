@@ -38,6 +38,8 @@ services:
       - /var/run:/var/run:rw
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
+    command:
+      - "--docker_only"
     deploy:
       mode: global     # Запустится на всех серверах автоматически
       resources:
