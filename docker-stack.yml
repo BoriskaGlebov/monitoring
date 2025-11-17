@@ -26,7 +26,7 @@ services:
       - monitoring_net
 
   cadvisor:
-    image: bitnami/cadvisor:latest
+    image: google/cadvisor:canary
     ports:
       - target: 8080
         published: 8080
