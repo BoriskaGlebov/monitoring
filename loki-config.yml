@@ -2,47 +2,44 @@ auth_enabled: false
 
 server:
   http_listen_port: 3100
-  grpc_listen_port: 0  # gRPC отключён
 
 ingester:
   lifecycler:
-    address: 0.0.0.0
+    address: 127.0.0.1
     ring:
       kvstore:
         store: inmemory
       replication_factor: 1
   chunk_idle_period: 5m
-  max_chunk_age: 1h
   chunk_retain_period: 30s
   max_transfer_retries: 0
 
 schema_config:
   configs:
-    - from: 2020-10-24
+    - from: 2020-10-15
       store: boltdb-shipper
       object_store: filesystem
       schema: v11
       index:
         prefix: index_
-        period: 24h
+        period: 168h
 
 storage_config:
   boltdb_shipper:
     active_index_directory: /loki/index
-    shared_store: filesystem
     cache_location: /loki/cache
-
+    shared_store: filesystem
   filesystem:
     directory: /loki/chunks
 
 limits_config:
-  ingestion_rate_mb: 10
-  ingestion_burst_size_mb: 20
-  max_entries_limit_per_query: 50000
+  enforce_metric_name: false
+  reject_old_samples: true
+  reject_old_samples_max_age: 168h
 
 chunk_store_config:
-  max_look_back_period: 0
+  max_look_back_period: 0s
 
 table_manager:
-  retention_deletes_enabled: true
-  retention_period: 7d
+  retention_deletes_enabled: false
+  retention_period: 0s
