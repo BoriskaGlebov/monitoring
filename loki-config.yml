@@ -2,6 +2,7 @@ auth_enabled: false
 
 server:
   http_listen_port: 3100
+  grpc_listen_port: 9095
 
 ingester:
   lifecycler:
@@ -10,8 +11,8 @@ ingester:
       kvstore:
         store: inmemory
       replication_factor: 1
-  chunk_idle_period: 5m
-  chunk_retain_period: 30s
+  cchunk_idle_period: 1m
+  chunk_retain_period: 1m
   max_transfer_retries: 0
 
 schema_config:
