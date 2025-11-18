@@ -80,7 +80,7 @@ services:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: password
       GF_SERVER_ROOT_URL: http://vpn-boriska.ru/grafana
-#      GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+    #      GF_SERVER_SERVE_FROM_SUB_PATH: "true"
     volumes:
       - grafana_data:/var/lib/grafana
     deploy:
@@ -94,6 +94,41 @@ services:
           memory: 512M
     networks:
       - monitoring_net
+  loki:
+    image: grafana/loki:2.9.0
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - loki_data:/loki
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1G
+    networks:
+      - monitoring_net
+  promtail:
+    image: grafana/promtail:2.9.0
+    command: -config.file=/etc/promtail/config.yml
+    volumes:
+      - /var/log:/var/log
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - ./config.yml:/etc/promtail/config.yml:ro
+      - /tmp:/tmp
+    deploy:
+      mode: global
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+    networks:
+      - monitoring_net
+
 
   nginx:
     image: nginx:latest
@@ -124,6 +159,8 @@ volumes:
     name: grafana_vol
   prometheus_data:
     name: prometheus_data
+  loki_data:
+    name: loki_data
 
 networks:
   monitoring_net:
