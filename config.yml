@@ -9,10 +9,10 @@ clients:
   - url: http://loki:3100/loki/api/v1/push
 
 scrape_configs:
-  - job_name: "containers"
+  # Логи Docker контейнеров
+  - job_name: containers
     static_configs:
-      - targets:
-          - localhost
+      - targets: ["localhost"]
         labels:
           job: docker
           host: ${HOSTNAME}

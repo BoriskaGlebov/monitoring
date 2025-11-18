@@ -106,12 +106,9 @@ services:
       placement:
         constraints:
           - node.role == manager
-      resources:
-        limits:
-          cpus: "1"
-          memory: 1G
     networks:
       - monitoring_net
+
   promtail:
     image: grafana/promtail:2.9.0
     command: -config.file=/etc/promtail/config.yml
@@ -121,11 +118,10 @@ services:
       - ./config.yml:/etc/promtail/config.yml:ro
       - /tmp:/tmp
     deploy:
-      mode: global
-      resources:
-        limits:
-          cpus: "0.5"
-          memory: 256M
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == vm906802   # ← ЗАМЕНИТЬ
     networks:
       - monitoring_net
 
