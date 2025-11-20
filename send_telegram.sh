@@ -8,7 +8,7 @@ COMPOSE_PATH="/home/prod_server/production/monitoring/docker-compose.yaml"
 
 
 # Выполняем обновление и сохраняем вывод
-OUTPUT=$(certbot renew --deploy-hook "docker compose -f $COMPOSE_PATH restart nginx" 2>&1)
+OUTPUT=$(certbot renew --deploy-hook "docker service update --force monitoring_nginx" 2>&1)
 EXIT_CODE=$?
 # Получаем имя хоста
 SERVER_NAME="vpn-boriska"
