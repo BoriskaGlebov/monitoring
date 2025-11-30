@@ -24,6 +24,7 @@ services:
           memory: 1024M
     networks:
       - monitoring_net
+    network_mode: host
 
   cadvisor:
     image: google/cadvisor:canary
