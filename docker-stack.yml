@@ -50,7 +50,7 @@ services:
       - monitoring_net
 
   node-exporter:
-    image: prom/node-exporter:v1.10.2
+    image: prom/node-exporter:latest
     command:
       - '--path.procfs=/host/proc'
       - '--path.sysfs=/host/sys'
