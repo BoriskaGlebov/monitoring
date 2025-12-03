@@ -26,7 +26,7 @@ services:
       - monitoring_net
 
   cadvisor:
-    image: google/cadvisor:canary
+    image: ghcr.io/google/cadvisor:v0.53.0
     ports:
       - target: 8080
         published: 8080
