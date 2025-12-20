@@ -23,7 +23,7 @@ services:
           cpus: "1"
           memory: 1024M
     networks:
-      - monitoring_net
+      - shared_net
 
   cadvisor:
     image: ghcr.io/google/cadvisor:v0.53.0
@@ -47,7 +47,7 @@ services:
           cpus: "1"
           memory: 512M
     networks:
-      - monitoring_net
+      - shared_net
 
   node-exporter:
     image: prom/node-exporter:latest
@@ -70,7 +70,7 @@ services:
         protocol: tcp
         mode: host
     networks:
-      - monitoring_net
+      - shared_net
 
   grafana:
     image: grafana/grafana:11.5.2
@@ -93,7 +93,7 @@ services:
           cpus: "1"
           memory: 512M
     networks:
-      - monitoring_net
+      - shared_net
   nginx:
     image: nginx:latest
     ports:
@@ -122,7 +122,7 @@ services:
         reservations:
           memory: 256M
     networks:
-      - monitoring_net
+      - shared_net
 
 volumes:
   grafana_data:
@@ -133,6 +133,6 @@ volumes:
     name: loki_data
 
 networks:
-  monitoring_net:
+  shared_net:
     external: true
     name: shared_net
