@@ -4,11 +4,12 @@
 
 WEBHOOK_URL="https://api.telegram.org/bot6796421307:AAHmQ9jvbJl9kslUnPR5W5beV5ECAuesWAs/sendMessage"
 CHAT_ID="439653349"
-COMPOSE_PATH="/home/bot_server/test_zone/Help-Blocks/docker-compose.test.yaml"
+COMMON_FILE="/home/vpn_user/test_zone/vpn_bot/docker-compose.common.yml"
+COMPOSE_PATH="/home/vpn_user/test_zone/vpn_bot/docker-compose.develop.yml"
 
 
 # Выполняем обновление и сохраняем вывод
-OUTPUT=$(certbot renew --deploy-hook "docker compose -f $COMPOSE_PATH restart nginx_proxy_test" 2>&1)
+OUTPUT=$(certbot renew --deploy-hook "docker compose -f $COMMON_FILE -f $COMPOSE_PATH restart nginx_vpn_bot" 2>&1)
 EXIT_CODE=$?
 # Получаем имя хоста
 SERVER_NAME="help-blocks"
