@@ -26,7 +26,7 @@ services:
       - shared_net
 
   cadvisor:
-    image: ghcr.io/google/cadvisor:v0.53.0
+    image: ghcr.io/google/cadvisor:7cbdee9-7cbdee9260c4292d5d27d00416ce8a7dc1dc12a0
     ports:
       - target: 8080
         published: 8080
