@@ -41,9 +41,10 @@ services:
     #      - /sys:/sys:ro
     #      - /var/lib/docker/:/var/lib/docker:ro
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /sys:/sys:ro
-      - /proc:/proc:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro   # доступ к Docker API
+      - /sys:/sys:ro                                   # системные метрики
+      - /proc:/proc:ro                                 # процессы и cgroup
+      - /dev/disk/:/dev/disk:ro
     command:
       - "--docker_only"
     deploy:
