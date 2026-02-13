@@ -35,16 +35,11 @@ services:
     privileged: true
     security_opt:
       - apparmor=unconfined
-    #    volumes:
-    #      - /:/rootfs:ro
-    #      - /var/run:/var/run:rw
-    #      - /sys:/sys:ro
-    #      - /var/lib/docker/:/var/lib/docker:ro
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro   # доступ к Docker API
-      - /sys:/sys:ro                                   # системные метрики
-      - /proc:/proc:ro                                 # процессы и cgroup
-      - /dev/disk/:/dev/disk:ro
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
     command:
       - "--docker_only"
     deploy:
