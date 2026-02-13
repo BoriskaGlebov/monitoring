@@ -33,6 +33,8 @@ services:
         protocol: tcp
         mode: host
     privileged: true
+    security_opt:
+      - apparmor=unconfined
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:rw
