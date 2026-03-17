@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  deplou_help_blocks:
+  deploy_vpn_boriska:
       runs-on: ubuntu-latest
       if: github.ref == 'refs/heads/main'  # Выполняется только для ветки main.
       steps:
