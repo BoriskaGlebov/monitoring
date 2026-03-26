@@ -13,5 +13,5 @@ logformat "-\""+_G{""time_unix"":%t, ""proxy"":{""type:"":""%N"", ""port"":%p}, 
 auth strong
 socks -p$SOCKS5_PORT
 EOF
-
+echo "Container startup"
 /bin/3proxy /usr/local/3proxy/conf/3proxy.cfg
