@@ -14,4 +14,4 @@ auth strong
 socks -p$SOCKS5_PORT
 EOF
 
-exec /bin/3proxy /usr/local/3proxy/conf/3proxy.cfg
+/bin/3proxy /usr/local/3proxy/conf/3proxy.cfg
