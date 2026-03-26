@@ -6,4 +6,4 @@ COPY start.sh /start.sh
 RUN chmod a+x /start.sh
 
 
-ENTRYPOINT ["/bin/sh","-c","/entrypoint.sh && /start.sh"]
+ENTRYPOINT ["/bin/sh","-c","/entrypoint.sh"]
