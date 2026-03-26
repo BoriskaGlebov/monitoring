@@ -51,28 +51,28 @@ services:
     networks:
       - shared_net
 
-  node-exporter:
-    image: prom/node-exporter:latest
-    command:
-      - '--path.procfs=/host/proc'
-      - '--path.sysfs=/host/sys'
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    deploy:
-      mode: global   # На каждом сервере Swarm — один экземпляр
-      resources:
-        limits:
-          cpus: "1"
-          memory: 512M
-    ports:
-      - target: 9100
-        published: 9100
-        protocol: tcp
-        mode: host
-    networks:
-      - shared_net
+#  node-exporter:
+#    image: prom/node-exporter:latest
+#    command:
+#      - '--path.procfs=/host/proc'
+#      - '--path.sysfs=/host/sys'
+#    volumes:
+#      - /proc:/host/proc:ro
+#      - /sys:/host/sys:ro
+#      - /:/rootfs:ro
+#    deploy:
+#      mode: global   # На каждом сервере Swarm — один экземпляр
+#      resources:
+#        limits:
+#          cpus: "1"
+#          memory: 512M
+#    ports:
+#      - target: 9100
+#        published: 9100
+#        protocol: tcp
+#        mode: host
+#    networks:
+#      - shared_net
 
   grafana:
     image: grafana/grafana:11.5.2
