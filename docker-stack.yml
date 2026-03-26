@@ -143,6 +143,11 @@ services:
         limits:
           cpus: "0.5"
           memory: 128M
+    ports:
+      - target: 1080      # порт внутри контейнера
+        published: 1080   # порт на хосте
+        protocol: tcp
+        mode: host
     networks:
       - shared_net
 
