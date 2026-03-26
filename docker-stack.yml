@@ -133,7 +133,7 @@ services:
     environment:
       SOCKS5_LOGIN: "tguser"
       SOCKS5_PASSWORD: "superStrongPass123"
-      SOCKS5_PORT: "1080"
+      SOCKS5_PORT: "8888"
     deploy:
       replicas: 1
       placement:
@@ -144,8 +144,8 @@ services:
           cpus: "0.5"
           memory: 128M
     ports:
-      - target: 1080      # порт внутри контейнера
-        published: 1080   # порт на хосте
+      - target: 8888     # порт внутри контейнера
+        published: 8888   # порт на хосте
         protocol: tcp
         mode: host
     networks:
