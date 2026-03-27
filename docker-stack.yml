@@ -108,7 +108,7 @@ services:
         protocol: tcp
         mode: host
     volumes:
-      - ./nginx-web.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx_web.conf:/etc/nginx/nginx.conf:ro
       - /var/www/certbot:/var/www/certbot:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - /etc/ssl/certs/dhparam.pem:/etc/ssl/certs/dhparam.pem:ro
