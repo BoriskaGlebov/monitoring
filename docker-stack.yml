@@ -96,7 +96,7 @@ services:
           memory: 512M
     networks:
       - shared_net
-  nginx_web:
+  nginx-web:
     image: nginx:latest
     ports:
       - target: 80
@@ -125,6 +125,7 @@ services:
           memory: 256M
     networks:
       - shared_net
+
   socks5proxy:
     image: socks5proxy:latest
     environment:
