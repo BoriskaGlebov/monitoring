@@ -128,29 +128,29 @@ services:
           memory: 256M
     networks:
       - shared_net
-#  socks5proxy:
-#    image: socks5proxy:latest
-#    environment:
-#      SOCKS5_LOGIN: "tguser"
-#      SOCKS5_PASSWORD: "superStrongPass123"
-#      SOCKS5_PORT: "8888"
-#    deploy:
-#      replicas: 1
-#      placement:
-#        constraints:
-#          - node.role == manager
-#      resources:
-#        limits:
-#          cpus: "0.5"
-#          memory: 128M
-#    ports:
-#      - target: 8888     # порт внутри контейнера
-#        published: 8888   # порт на хосте
-#        protocol: tcp
-#        mode: host
-#    networks:
-#      - shared_net
-
+  socks5proxy:
+    image: socks5proxy:latest
+    environment:
+      SOCKS5_LOGIN: "tguser"
+      SOCKS5_PASSWORD: "superStrongPass123"
+      SOCKS5_PORT: "8443"
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 128M
+    ports:
+      - target: 8443     # порт внутри контейнера
+        published: 8443   # порт на хосте
+        protocol: tcp
+        mode: host
+    networks:
+      - shared_net
+#
 volumes:
   grafana_data:
     name: grafana_vol
