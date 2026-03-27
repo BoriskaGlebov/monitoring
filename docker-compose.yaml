@@ -19,6 +19,13 @@ services:
           memory: 512M
         reservations:
           memory: 256M
+    networks:
+      - shared_net
+
+networks:
+  shared_net:
+    name: shared_net
+    external: true
 
 
 
