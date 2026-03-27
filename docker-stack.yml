@@ -143,11 +143,11 @@ services:
         limits:
           cpus: "0.5"
           memory: 128M
-    ports:
-      - target: 8443     # порт внутри контейнера
-        published: 8443   # порт на хосте
-        protocol: tcp
-        mode: host
+#    ports:
+#      - target: 8443     # порт внутри контейнера
+#        published: 8443   # порт на хосте
+#        protocol: tcp
+#        mode: host
     networks:
       - shared_net
 #
