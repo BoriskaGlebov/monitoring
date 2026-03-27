@@ -96,8 +96,9 @@ services:
           memory: 512M
     networks:
       - shared_net
-#  nginx-web:
-#    image: nginx:latest
+  nginx-web:
+    image: nginx:latest
+    network_mode: host
 #    ports:
 #      - target: 80
 #        published: 80
@@ -107,27 +108,27 @@ services:
 #        published: 443
 #        protocol: tcp
 #        mode: host
-#    depends_on:
-#      - prometheus
-#      - grafana
-#    volumes:
-#      - ./nginx_web.conf:/etc/nginx/nginx.conf:ro
-#      - /var/www/certbot:/var/www/certbot:ro
-#      - /etc/letsencrypt:/etc/letsencrypt:ro
-#      - /etc/ssl/certs/dhparam.pem:/etc/ssl/certs/dhparam.pem:ro
-#    deploy:
-#      replicas: 1
-#      placement:
-#        constraints:
-#          - node.role == manager
-#      resources:
-#        limits:
-#          cpus: '1'
-#          memory: 512M
-#        reservations:
-#          memory: 256M
-#    networks:
-#      - shared_net
+    depends_on:
+      - prometheus
+      - grafana
+    volumes:
+      - ./nginx_web.conf:/etc/nginx/nginx.conf:ro
+      - /var/www/certbot:/var/www/certbot:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /etc/ssl/certs/dhparam.pem:/etc/ssl/certs/dhparam.pem:ro
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          memory: 256M
+    networks:
+      - shared_net
 
 #  nginx-proxy:
 #    image: nginx:latest
