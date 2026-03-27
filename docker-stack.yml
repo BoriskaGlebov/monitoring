@@ -4,8 +4,8 @@ services:
 
   prometheus:
     image: prom/prometheus:main
-    #    ports:
-    #      - "9090:9090"
+    ports:
+      - "127.0.0.1:9090:9090"
     volumes:
       - prometheus_data:/prometheus
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
@@ -76,13 +76,13 @@ services:
 
   grafana:
     image: grafana/grafana:11.5.2
-    #    ports:
-    #      - "3000:3000"
+    ports:
+      - "127.0.0.1:3000:3000"
     environment:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: password
       GF_SERVER_ROOT_URL: https://vpn-boriska.ru/grafana
-#      GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+    #      GF_SERVER_SERVE_FROM_SUB_PATH: "true"
     volumes:
       - grafana_data:/var/lib/grafana
     deploy:
@@ -96,64 +96,64 @@ services:
           memory: 512M
     networks:
       - shared_net
-#  nginx-web:
-#    image: nginx:latest
-#    network_mode: host
-##    ports:
-##      - target: 80
-##        published: 80
-##        protocol: tcp
-##        mode: host
-##      - target: 443
-##        published: 443
-##        protocol: tcp
-##        mode: host
-#    depends_on:
-#      - prometheus
-#      - grafana
-#    volumes:
-#      - ./nginx_web.conf:/etc/nginx/nginx.conf:ro
-#      - /var/www/certbot:/var/www/certbot:ro
-#      - /etc/letsencrypt:/etc/letsencrypt:ro
-#      - /etc/ssl/certs/dhparam.pem:/etc/ssl/certs/dhparam.pem:ro
-#    deploy:
-#      replicas: 1
-#      placement:
-#        constraints:
-#          - node.role == manager
-#      resources:
-#        limits:
-#          cpus: '1'
-#          memory: 512M
-#        reservations:
-#          memory: 256M
-#    networks:
-#      - shared_net
+  #  nginx-web:
+  #    image: nginx:latest
+  #    network_mode: host
+  ##    ports:
+  ##      - target: 80
+  ##        published: 80
+  ##        protocol: tcp
+  ##        mode: host
+  ##      - target: 443
+  ##        published: 443
+  ##        protocol: tcp
+  ##        mode: host
+  #    depends_on:
+  #      - prometheus
+  #      - grafana
+  #    volumes:
+  #      - ./nginx_web.conf:/etc/nginx/nginx.conf:ro
+  #      - /var/www/certbot:/var/www/certbot:ro
+  #      - /etc/letsencrypt:/etc/letsencrypt:ro
+  #      - /etc/ssl/certs/dhparam.pem:/etc/ssl/certs/dhparam.pem:ro
+  #    deploy:
+  #      replicas: 1
+  #      placement:
+  #        constraints:
+  #          - node.role == manager
+  #      resources:
+  #        limits:
+  #          cpus: '1'
+  #          memory: 512M
+  #        reservations:
+  #          memory: 256M
+  #    networks:
+  #      - shared_net
 
-#  nginx-proxy:
-#    image: nginx:latest
-#    ports:
-#      - "94.156.116.218:443:443"
-##    depends_on:
-##      - socks5proxy
-#    volumes:
-#      - ./nginx_proxy.conf:/etc/nginx/nginx.conf:ro
-#      - /var/www/certbot:/var/www/certbot:ro
-#      - /etc/letsencrypt:/etc/letsencrypt:ro
-#      - /etc/ssl/certs/dhparam.pem:/etc/ssl/certs/dhparam.pem:ro
-#    deploy:
-#      replicas: 1
-#      placement:
-#        constraints:
-#          - node.role == manager
-#      resources:
-#        limits:
-#          cpus: '1'
-#          memory: 512M
-#        reservations:
-#          memory: 256M
-#    networks:
-#      - shared_net
+  #  nginx-proxy:
+  #    image: nginx:latest
+  #    ports:
+  #      - "94.156.116.218:443:443"
+  ##    depends_on:
+  ##      - socks5proxy
+  #    volumes:
+  #      - ./nginx_proxy.conf:/etc/nginx/nginx.conf:ro
+  #      - /var/www/certbot:/var/www/certbot:ro
+  #      - /etc/letsencrypt:/etc/letsencrypt:ro
+  #      - /etc/ssl/certs/dhparam.pem:/etc/ssl/certs/dhparam.pem:ro
+  #    deploy:
+  #      replicas: 1
+  #      placement:
+  #        constraints:
+  #          - node.role == manager
+  #      resources:
+  #        limits:
+  #          cpus: '1'
+  #          memory: 512M
+  #        reservations:
+  #          memory: 256M
+  #    networks:
+  #      - shared_net
 
   socks5proxy:
     image: socks5proxy:latest
