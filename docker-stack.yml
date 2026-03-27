@@ -99,8 +99,8 @@ services:
   nginx_web:
     image: nginx:latest
     ports:
-      - "91.149.219.221:80:80"
-      - "91.149.219.221:443:443"
+      - "80:80"
+      - "443:443"
       #    ports:
       #      - target: 80
       #        published: 91.149.219.221:80
