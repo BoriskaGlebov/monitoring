@@ -101,15 +101,15 @@ services:
     ports:
       - "91.149.219.221:80:80"
       - "91.149.219.221:443:443"
-#    ports:
-#      - target: 80
-#        published: 91.149.219.221:80
-#        protocol: tcp
-#        mode: host
-#      - target: 443
-#        published: 91.149.219.221:80
-#        protocol: tcp
-#        mode: host
+      #    ports:
+      #      - target: 80
+      #        published: 91.149.219.221:80
+      #        protocol: tcp
+      #        mode: host
+      #      - target: 443
+      #        published: 91.149.219.221:80
+      #        protocol: tcp
+      #        mode: host
     volumes:
       - ./nginx-web.conf:/etc/nginx/nginx.conf:ro
       - /var/www/certbot:/var/www/certbot:ro
