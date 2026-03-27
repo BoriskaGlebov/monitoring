@@ -18,8 +18,8 @@ users \$/usr/local/3proxy/conf/users.txt
 log /usr/local/3proxy/logs/3proxy.log
 logformat "-\""+_G{""time_unix"":%t, ""proxy"":{""type:"":""%N"", ""port"":%p}, ""error"":{""code"":""%E""}, ""auth"":{""user"":""%U""}, ""client"":{""ip"":""%C"", ""port"":%c}, ""server"":{""ip"":""%R"", ""port"":%r}, ""bytes"":{""sent"":%O, ""received"":%I}, ""request"":{""hostname"":""%n""}, ""message"":""%T""}"
 
-auth none
-socks -p$SOCKS5_PORT -i0.0.0.0 -e0.0.0.0
+auth strong
+socks -p$SOCKS5_PORT -i127.0.0.1 -e127.0.0.1
 EOF
 
 echo "Container startup"
