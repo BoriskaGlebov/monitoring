@@ -128,6 +128,7 @@ services:
           memory: 256M
     networks:
       - shared_net
+      - host
 
 #  nginx-proxy:
 #    image: nginx:latest
