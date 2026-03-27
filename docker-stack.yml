@@ -147,9 +147,7 @@ services:
     #        protocol: tcp
     #        mode: host
     depends_on:
-      - prometheus
-      - grafana
-      - socks5proxy
+      - nginx-web
     volumes:
       - ./nginx_proxy.conf:/etc/nginx/nginx.conf:ro
       - /var/www/certbot:/var/www/certbot:ro
