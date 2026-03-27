@@ -32,9 +32,11 @@ jobs:
           ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
           cd production/monitoring || exit  # Переход в директорию приложения
           git pull origin main            # Обновление кода из репозитория
+          docker compose down
           docker build -t socks5proxy:latest ./socks5_proxy
           docker stack rm monitoring
           docker stack deploy -c docker-stack.yml monitoring
+          docker compose up -d --build
           EOF
   deploy_help_blocks:
     runs-on: ubuntu-latest

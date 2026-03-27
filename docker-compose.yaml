@@ -7,11 +7,11 @@ services:
       - /var/www/certbot:/var/www/certbot:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - /etc/ssl/certs/dhparam.pem:/etc/ssl/certs/dhparam.pem:ro
-    ports:
-      - "91.149.219.221:80:80"
-      - "91.149.219.221:443:443"
-      - "94.156.116.218:443:443"
-#    network_mode: host
+#    ports:
+#      - "91.149.219.221:80:80"
+#      - "91.149.219.221:443:443"
+#      - "94.156.116.218:443:443"
+    network_mode: host
     restart: unless-stopped
     deploy:
       resources:
