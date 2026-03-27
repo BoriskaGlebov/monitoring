@@ -9,7 +9,7 @@ services:
       - /etc/ssl/certs/dhparam.pem:/etc/ssl/certs/dhparam.pem:ro
     ports:
       - "80:80"
-      - "443:443"
+      - "8443:8443"
     restart: unless-stopped
     deploy:
       resources:
