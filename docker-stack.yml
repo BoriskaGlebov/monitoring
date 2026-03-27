@@ -110,8 +110,48 @@ services:
 #        published: 443
 #        protocol: tcp
 #        mode: host
+    depends_on:
+      - prometheus
+      - grafana
+      - socks5proxy
     volumes:
       - ./nginx_web.conf:/etc/nginx/nginx.conf:ro
+      - /var/www/certbot:/var/www/certbot:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /etc/ssl/certs/dhparam.pem:/etc/ssl/certs/dhparam.pem:ro
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          memory: 256M
+    networks:
+      - shared_net
+
+  nginx-proxy:
+    image: nginx:latest
+    ports:
+      - "94.156.116.218:443:443"
+    #    ports:
+    #      - target: 80
+    #        published: 80
+    #        protocol: tcp
+    #        mode: host
+    #      - target: 443
+    #        published: 443
+    #        protocol: tcp
+    #        mode: host
+    depends_on:
+      - prometheus
+      - grafana
+      - socks5proxy
+    volumes:
+      - ./nginx_proxy.conf:/etc/nginx/nginx.conf:ro
       - /var/www/certbot:/var/www/certbot:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - /etc/ssl/certs/dhparam.pem:/etc/ssl/certs/dhparam.pem:ro
