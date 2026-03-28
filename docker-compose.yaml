@@ -1,24 +1,24 @@
 services:
-#  nginx:
-#    image: nginx:latest
-#    container_name: nginx
-#    volumes:
-#      - ./nginx_web.conf:/etc/nginx/nginx.conf:ro
-#      - /var/www/certbot:/var/www/certbot:ro
-#      - /etc/letsencrypt:/etc/letsencrypt:ro
-#      - /etc/ssl/certs/dhparam.pem:/etc/ssl/certs/dhparam.pem:ro
-#    network_mode: host
-##    ports:
-##      - "80:80"
-##      - "443:443"
-#    restart: unless-stopped
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: '1'
-#          memory: 512M
-#        reservations:
-#          memory: 256M
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./nginx_web.conf:/etc/nginx/nginx.conf:ro
+      - /var/www/certbot:/var/www/certbot:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /etc/ssl/certs/dhparam.pem:/etc/ssl/certs/dhparam.pem:ro
+    network_mode: host
+#    ports:
+#      - "80:80"
+#      - "443:443"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          memory: 256M
 
 #  socks5proxy:
 #    image: socks5proxy:latest
