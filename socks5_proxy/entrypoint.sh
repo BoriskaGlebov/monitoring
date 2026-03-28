@@ -20,7 +20,7 @@ logformat "-\""+_G{""time_unix"":%t, ""proxy"":{""type:"":""%N"", ""port"":%p}, 
 
 auth strong
 deny *
-socks -p$SOCKS5_PORT
+socks -p$SOCKS5_PORT -i0.0.0.0
 EOF
 
 echo "Container startup"
