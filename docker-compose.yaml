@@ -22,6 +22,7 @@ services:
 
   socks5proxy:
     image: socks5proxy:latest
+    container_name: socks5proxy
     environment:
       SOCKS5_LOGIN: "tguser"
       SOCKS5_PASSWORD: "superStrongPass123"
@@ -40,8 +41,8 @@ services:
         limits:
           cpus: "0.5"
           memory: 128M
-    networks:
-      - shared_net
+#    networks:
+#      - shared_net
 
 networks:
   shared_net:
