@@ -28,7 +28,7 @@ services:
       SOCKS5_PASSWORD: "superStrongPass123"
       SOCKS5_PORT: "8888"
     ports:
-      - "8888:8888"
+      - "127.0.0.1:8888:8888"
     deploy:
       replicas: 1
       placement:
