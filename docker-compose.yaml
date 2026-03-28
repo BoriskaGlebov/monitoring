@@ -38,13 +38,13 @@ services:
         limits:
           cpus: "0.5"
           memory: 128M
-    networks:
-      - shared_net
-
-networks:
-  shared_net:
-    name: shared_net
-    external: true
+#    networks:
+#      - shared_net
+#
+#networks:
+#  shared_net:
+#    name: shared_net
+#    external: true
 
 
 
