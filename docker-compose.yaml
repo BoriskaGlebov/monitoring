@@ -20,24 +20,24 @@ services:
         reservations:
           memory: 256M
 
-  socks5proxy:
-    image: socks5proxy:latest
-    container_name: socks5proxy
-    environment:
-      SOCKS5_LOGIN: "tguser"
-      SOCKS5_PASSWORD: "superStrongPass123"
-      SOCKS5_PORT: "443"
-    ports:
-      - "94.156.116.218:443:443"
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == manager
-      resources:
-        limits:
-          cpus: "0.5"
-          memory: 128M
+#  socks5proxy:
+#    image: socks5proxy:latest
+#    container_name: socks5proxy
+#    environment:
+#      SOCKS5_LOGIN: "tguser"
+#      SOCKS5_PASSWORD: "superStrongPass123"
+#      SOCKS5_PORT: "443"
+#    ports:
+#      - "94.156.116.218:443:443"
+#    deploy:
+#      replicas: 1
+#      placement:
+#        constraints:
+#          - node.role == manager
+#      resources:
+#        limits:
+#          cpus: "0.5"
+#          memory: 128M
 #    networks:
 #      - shared_net
 #
