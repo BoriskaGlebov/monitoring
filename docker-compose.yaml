@@ -28,10 +28,7 @@ services:
       SOCKS5_PASSWORD: "superStrongPass123"
       SOCKS5_PORT: "8888"
     ports:
-      - target: 8888
-        published: 8888
-        protocol: tcp
-        mode: host
+      - "8888:8888"
     deploy:
       replicas: 1
       placement:
