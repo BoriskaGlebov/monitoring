@@ -160,9 +160,9 @@ services:
     environment:
       SOCKS5_LOGIN: "tguser"
       SOCKS5_PASSWORD: "superStrongPass123"
-      SOCKS5_PORT: "8443"
+      SOCKS5_PORT: "8888"
     ports:
-      - "8443:8443"
+      - "8888:8888"
     deploy:
       replicas: 1
       placement:
