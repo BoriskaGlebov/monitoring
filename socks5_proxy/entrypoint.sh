@@ -19,7 +19,7 @@ log /usr/local/3proxy/logs/3proxy.log
 logformat "-\""+_G{""time_unix"":%t, ""proxy"":{""type:"":""%N"", ""port"":%p}, ""error"":{""code"":""%E""}, ""auth"":{""user"":""%U""}, ""client"":{""ip"":""%C"", ""port"":%c}, ""server"":{""ip"":""%R"", ""port"":%r}, ""bytes"":{""sent"":%O, ""received"":%I}, ""request"":{""hostname"":""%n""}, ""message"":""%T""}"
 
 auth strong
-socks -p$SOCKS5_PORT -i127.0.0.1 -e127.0.0.1
+socks -p$SOCKS5_PORT
 EOF
 
 echo "Container startup"
