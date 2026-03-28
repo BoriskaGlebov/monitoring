@@ -7,10 +7,10 @@ services:
       - /var/www/certbot:/var/www/certbot:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - /etc/ssl/certs/dhparam.pem:/etc/ssl/certs/dhparam.pem:ro
-    network_mode: host
-#    ports:
-#      - "80:80"
-#      - "443:443"
+#    network_mode: host
+    ports:
+      - "91.149.219.221:80:80"
+      - "91.149.219.221:443:443"
     restart: unless-stopped
     deploy:
       resources:
@@ -19,25 +19,6 @@ services:
           memory: 512M
         reservations:
           memory: 256M
-
-  socks5proxy:
-    image: socks5proxy:latest
-    container_name: socks5proxy
-    environment:
-      SOCKS5_LOGIN: "tguser"
-      SOCKS5_PASSWORD: "superStrongPass123"
-      SOCKS5_PORT: "8888"
-    ports:
-      - "127.0.0.1:8888:8888"
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == manager
-      resources:
-        limits:
-          cpus: "0.5"
-          memory: 128M
 #    networks:
 #      - shared_net
 
