@@ -166,10 +166,6 @@ services:
         published: 8888
         protocol: tcp
         mode: host
-      - target: 8888
-        published: 8888
-        protocol: tcp
-        mode: host
     deploy:
       replicas: 1
       placement:
