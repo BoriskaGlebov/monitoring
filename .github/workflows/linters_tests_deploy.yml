@@ -32,6 +32,15 @@ jobs:
           ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
           cd production/monitoring || exit  # Переход в директорию приложения
           git pull origin main            # Обновление кода из репозитория
+
+          TELEMT_SECRET_HELLO="${{ secrets.TELEMT_SECRET_HELLO }}"
+          TOML_FILE="./telemt-config/telemt.toml"
+
+          if grep -q '^\s*hello\s*=' "$TOML_FILE"; then
+            sed -i "s/^\s*hello\s*=.*/hello = \"$TELEMT_SECRET_HELLO\"/" "$TOML_FILE"
+          else
+            echo "hello = \"$TELEMT_SECRET_HELLO\"" >> "$TOML_FILE"
+          fi
           docker compose down
           docker build -t socks5proxy:latest ./socks5_proxy
           docker stack rm monitoring
