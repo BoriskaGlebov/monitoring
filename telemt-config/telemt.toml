@@ -1,6 +1,6 @@
 # === General Settings ===
 [general]
-# ad_tag = "00000000000000000000000000000000"
+ad_tag = "d7cd893d0745737f398ac95ab053fa24"
 use_middle_proxy = false
 
 [general.modes]
