@@ -128,7 +128,7 @@ services:
       - -c
       - |
         envsubst < /etc/telemt/telemt.toml > /tmp/telemt.toml
-        exec /usr/local/bin/telemt /tmp/telemt.tomlы
+        exec /usr/local/bin/telemt /tmp/telemt.toml
 #networks:
 #  shared_net:
 #    name: shared_net
