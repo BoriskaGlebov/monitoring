@@ -1,6 +1,6 @@
 # === General Settings ===
 [general]
-#ad_tag = "d7cd893d0745737f398ac95ab053fa24"
+# ad_tag = "00000000000000000000000000000000"
 use_middle_proxy = false
 
 [general.modes]
@@ -13,10 +13,10 @@ port = 443
 
 [server.api]
 enabled = true
-listen = "0.0.0.0:9091"
-whitelist = ["0.0.0.0/32"]
-read_only = false
-#
+# listen = "127.0.0.1:9091"
+# whitelist = ["127.0.0.1/32"]
+# read_only = true
+
 # === Anti-Censorship & Masking ===
 [censorship]
 tls_domain = "petrovich.ru"
