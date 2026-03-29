@@ -23,4 +23,4 @@ tls_domain = "petrovich.ru"
 
 [access.users]
 # format: "username" = "32_hex_chars_secret"
-hello = "3568fc0a67ee1d94475104b2f42ac8aa213"
+hello = "32_hex_chars_secret"
