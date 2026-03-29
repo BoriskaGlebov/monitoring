@@ -13,9 +13,9 @@ port = 443
 
 [server.api]
 enabled = true
-listen = "127.0.0.1:9091"
-whitelist = ["127.0.0.1/32"]
-read_only = true
+listen = "0.0.0.0:9091"
+whitelist = ["0.0.0.0/32"]
+read_only = false
 #
 # === Anti-Censorship & Masking ===
 [censorship]
