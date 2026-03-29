@@ -58,7 +58,6 @@ services:
     # Telemt uses RUST_LOG for verbosity (optional)
     environment:
       RUST_LOG: "info"
-      TELEMT_SECRET_HELLO: "3568fc0a67ee1d94475104b2f42ac8aa"
 
     # ---------------------------------------------------------------
     # API Configuration writes (Atomic Config Save)
@@ -123,12 +122,6 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-    entrypoint:
-      - /bin/sh
-      - -c
-      - |
-        envsubst < /etc/telemt/telemt.toml > /tmp/telemt.toml
-        exec /usr/local/bin/telemt /tmp/telemt.toml
 #networks:
 #  shared_net:
 #    name: shared_net
