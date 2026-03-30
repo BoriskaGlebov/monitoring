@@ -113,7 +113,7 @@ BoriskaGlebov — https://github.com/BoriskaGlebov
 
 ```shell
 
-    sudo apt update && sudo apt upgrade -y
+    sudo apt update --fix-missing && sudo apt upgrade -y
     sudo apt autoremove -y
     sudo apt clean
 ```
