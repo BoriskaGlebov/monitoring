@@ -20,7 +20,11 @@ enabled = true
 # === Anti-Censorship & Masking ===
 [censorship]
 tls_domain = "petrovich.ru"
+mask = true
+tls_emulation = true        # Fetch real cert lengths and emulate TLS records
+tls_front_dir = "tlsfront"   # Cache directory for TLS emulation
+
 
 [access.users]
 # format: "username" = "32_hex_chars_secret"
-hello = "32_hex_chars_secret"
+hello = "3568fc0a67ee1d94475104b2f42ac8aa213"
