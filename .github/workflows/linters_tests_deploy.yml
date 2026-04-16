@@ -42,7 +42,6 @@ jobs:
             echo "hello = \"$TELEMT_SECRET_HELLO\"" >> "$TOML_FILE"
           fi
           docker compose down
-          docker build -t socks5proxy:latest ./socks5_proxy
           docker stack rm monitoring
           docker stack deploy -c docker-stack.yml monitoring
           docker compose up -d --build
