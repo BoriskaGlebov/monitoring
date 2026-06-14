@@ -19,7 +19,7 @@ enabled = true
 
 # === Anti-Censorship & Masking ===
 [censorship]
-tls_domain = "petrovich.ru"
+tls_domain = "remplanner.ru"
 mask = true
 tls_emulation = true        # Fetch real cert lengths and emulate TLS records
 tls_front_dir = "tlsfront"   # Cache directory for TLS emulation
