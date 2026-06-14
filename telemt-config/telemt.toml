@@ -9,19 +9,31 @@ classic = false
 secure = false
 tls = true
 
+[general.links]
+show = "*"
+# show = ["alice", "bob"] # Only show links for alice and bob
+# show = "*"              # Show links for all users
+# public_host = "proxy.example.com"  # Host (IP or domain) for tg:// links
+# public_port = 443                  # Port for tg:// links (default: server.port)
+
 [server]
 port = 443
 #client_mss = "tspu"
 
 [server.api]
 enabled = true
-# listen = "127.0.0.1:9091"
-# whitelist = ["127.0.0.1/32"]
-# read_only = true
+listen = "127.0.0.1:9091"
+whitelist = ["127.0.0.1/32", "::1/128"]
+minimal_runtime_enabled = false
+minimal_runtime_cache_ttl_ms = 1000
+
+# Listen on multiple interfaces/IPs - IPv4
+[[server.listeners]]
+ip = "0.0.0.0"
 
 # === Anti-Censorship & Masking ===
 [censorship]
-tls_domain = "remplanner.ru"
+tls_domain = "petrovich.ru"
 mask = true
 tls_emulation = true        # Fetch real cert lengths and emulate TLS records
 tls_front_dir = "tlsfront"   # Cache directory for TLS emulation
