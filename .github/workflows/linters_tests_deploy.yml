@@ -95,6 +95,7 @@ jobs:
         run: |
           ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
           cd production/monitoring || exit  # Переход в директорию приложения
+          git restore .
           git checkout develop
           git pull origin develop            # Обновление кода из репозитория
 
@@ -110,5 +111,4 @@ jobs:
           docker stack rm monitoring
           docker stack deploy -c docker-stack.yml monitoring
           docker compose up -d --build
-          git restore .
           EOF
