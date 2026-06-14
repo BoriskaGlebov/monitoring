@@ -10,6 +10,7 @@ tls = true
 
 [server]
 port = 443
+client_mss = "tspu"
 
 [server.api]
 enabled = true
