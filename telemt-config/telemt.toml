@@ -5,8 +5,8 @@ use_middle_proxy = true
 
 [general.modes]
 classic = false
-secure = true
-tls = false
+secure = false
+tls = true
 
 [server]
 port = 443
