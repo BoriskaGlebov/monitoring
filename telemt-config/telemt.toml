@@ -2,6 +2,7 @@
 [general]
 # ad_tag = "00000000000000000000000000000000"
 use_middle_proxy = true
+log_level = "normal"
 
 [general.modes]
 classic = false
@@ -10,7 +11,7 @@ tls = true
 
 [server]
 port = 443
-client_mss = "tspu"
+#client_mss = "tspu"
 
 [server.api]
 enabled = true
