@@ -110,5 +110,4 @@ jobs:
           docker stack rm monitoring
           docker stack deploy -c docker-stack.yml monitoring
           docker compose up -d --build
-          git restore .
           EOF
