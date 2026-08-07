@@ -2347,7 +2347,10 @@
       {
         "allValue": ".+",
         "current": {},
-        "datasource": "Prometheus",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
         "definition": "label_values(node_uname_info, group)",
         "error": null,
         "hide": 0,
@@ -2474,7 +2477,10 @@
       {
         "allValue": null,
         "current": {},
-        "datasource": "Prometheus",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
         "definition": "label_values(node_uname_info{job=\"node-exporter\"}, nodename)",
         "error": null,
         "hide": 0,
