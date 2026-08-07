@@ -885,7 +885,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "node_filesystem_free_bytes{mountpoint=\"/host\",instance=~\"$server:.*\"}",
+          "expr": "node_filesystem_free_bytes{mountpoint=\"/\",instance=~\"$server:.*\"}",
           "hide": false,
           "interval": "",
           "intervalFactor": 2,
