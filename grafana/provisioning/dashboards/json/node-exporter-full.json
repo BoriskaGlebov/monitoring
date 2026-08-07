@@ -100,7 +100,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Resource pressure via PSI",
+      "description": "Давление на ресурсы ядра (CPU/память/IO) — насколько процессы простаивают в ожидании ресурсов",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -218,7 +218,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Overall CPU busy percentage (averaged across all cores)",
+      "description": "Текущая загрузка CPU в % (среднее по всем ядрам)",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -301,7 +301,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "System load over all CPU cores together",
+      "description": "Load average — сколько процессов в среднем ожидают CPU за последнюю минуту",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -384,7 +384,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Real RAM usage excluding cache and reclaimable memory",
+      "description": "Процент занятой оперативной памяти",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -457,7 +457,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Percentage of swap space currently used by the system",
+      "description": "Процент занятого swap (подкачки на диск)",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -539,7 +539,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Used Root FS",
+      "description": "Процент занятого места на корневом разделе диска",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -622,7 +622,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "",
+      "description": "Количество ядер CPU на сервере",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -696,7 +696,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "",
+      "description": "Общий объём оперативной памяти",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -775,7 +775,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "",
+      "description": "Общий объём swap",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -854,7 +854,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "",
+      "description": "Общий размер корневого раздела диска",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -938,7 +938,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "",
+      "description": "Сколько времени сервер работает без перезагрузки",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1030,7 +1030,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "CPU time spent busy vs idle, split by activity type",
+      "description": "Загрузка CPU по типам (user/system/iowait и т.д.) во времени",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1248,7 +1248,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "RAM and swap usage overview, including caches",
+      "description": "Использование памяти во времени: занято / в кэше / свободно",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1451,7 +1451,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Per-interface network traffic (receive and transmit) in bits per second",
+      "description": "Входящий и исходящий сетевой трафик сервера",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1566,7 +1566,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Percentage of filesystem space used for each mounted device",
+      "description": "Занятое место на дисках по разделам во времени",
       "fieldConfig": {
         "defaults": {
           "color": {

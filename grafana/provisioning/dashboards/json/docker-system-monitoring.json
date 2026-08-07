@@ -86,7 +86,7 @@
       ],
       "datasource": "Prometheus",
       "decimals": 0,
-      "description": "",
+      "description": "Время работы сервера без перезагрузки",
       "editable": true,
       "error": false,
       "fieldConfig": {
@@ -255,7 +255,8 @@
           "value": "null"
         }
       ],
-      "valueName": "current"
+      "valueName": "current",
+      "description": "Сколько Docker-контейнеров запущено прямо сейчас"
     },
     {
       "cacheTimeout": null,
@@ -350,7 +351,8 @@
           "value": "null"
         }
       ],
-      "valueName": "current"
+      "valueName": "current",
+      "description": "Процент занятого места на диске"
     },
     {
       "cacheTimeout": null,
@@ -444,7 +446,8 @@
           "value": "null"
         }
       ],
-      "valueName": "current"
+      "valueName": "current",
+      "description": "Процент занятой оперативной памяти сервера"
     },
     {
       "cacheTimeout": null,
@@ -535,12 +538,13 @@
           "value": "null"
         }
       ],
-      "valueName": "current"
+      "valueName": "current",
+      "description": "Свободный объём swap"
     },
     {
       "cacheTimeout": null,
       "datasource": "Prometheus",
-      "description": "",
+      "description": "Load average сервера — нагрузка на CPU в очереди на выполнение",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -732,7 +736,8 @@
       "yaxis": {
         "align": false,
         "alignLevel": null
-      }
+      },
+      "description": "Сетевой трафик сервера (вход/выход) во времени"
     },
     {
       "aliasColors": {
@@ -876,7 +881,8 @@
       "yaxis": {
         "align": false,
         "alignLevel": null
-      }
+      },
+      "description": "Загрузка CPU сервера во времени"
     },
     {
       "aliasColors": {},
@@ -999,7 +1005,8 @@
       "yaxis": {
         "align": false,
         "alignLevel": null
-      }
+      },
+      "description": "Load average сервера — нагрузка на CPU в очереди на выполнение"
     },
     {
       "aliasColors": {
@@ -1115,7 +1122,8 @@
       "yaxis": {
         "align": false,
         "alignLevel": null
-      }
+      },
+      "description": "Свободное место на дисках во времени"
     },
     {
       "alert": {
@@ -1386,7 +1394,8 @@
       "yaxis": {
         "align": false,
         "alignLevel": null
-      }
+      },
+      "description": "Доступная (свободная) память во времени"
     },
     {
       "aliasColors": {
@@ -1504,7 +1513,8 @@
       "yaxis": {
         "align": false,
         "alignLevel": null
-      }
+      },
+      "description": "Скорость чтения/записи на диск"
     },
     {
       "aliasColors": {},
@@ -1613,7 +1623,8 @@
       "yaxis": {
         "align": false,
         "alignLevel": null
-      }
+      },
+      "description": "Загрузка CPU каждым Docker-контейнером отдельно"
     },
     {
       "aliasColors": {},
@@ -1729,7 +1740,8 @@
       "yaxis": {
         "align": false,
         "alignLevel": null
-      }
+      },
+      "description": "Потребление памяти каждым контейнером отдельно"
     },
     {
       "aliasColors": {},
@@ -1842,7 +1854,8 @@
       "yaxis": {
         "align": false,
         "alignLevel": null
-      }
+      },
+      "description": "Входящий сетевой трафик по каждому контейнеру"
     },
     {
       "aliasColors": {},
@@ -1957,7 +1970,8 @@
       "yaxis": {
         "align": false,
         "alignLevel": null
-      }
+      },
+      "description": "Исходящий сетевой трафик по каждому контейнеру"
     },
     {
       "columns": [
@@ -2039,7 +2053,8 @@
       ],
       "title": "Usage memory",
       "transform": "timeseries_aggregations",
-      "type": "table-old"
+      "type": "table-old",
+      "description": "Таблица: контейнеры с наибольшим потреблением памяти"
     },
     {
       "aliasColors": {},
@@ -2153,7 +2168,8 @@
       "yaxis": {
         "align": false,
         "alignLevel": null
-      }
+      },
+      "description": "Использование swap по контейнерам"
     },
     {
       "columns": [
@@ -2235,7 +2251,8 @@
       ],
       "title": "Remaining memory",
       "transform": "timeseries_aggregations",
-      "type": "table-old"
+      "type": "table-old",
+      "description": "Таблица: сколько памяти осталось до лимита по контейнерам"
     },
     {
       "columns": [
@@ -2317,7 +2334,8 @@
       ],
       "title": "Limit memory",
       "transform": "timeseries_aggregations",
-      "type": "table-old"
+      "type": "table-old",
+      "description": "Таблица: заданные лимиты памяти по контейнерам"
     }
   ],
   "refresh": "5m",
@@ -2457,7 +2475,7 @@
         "allValue": null,
         "current": {},
         "datasource": "Prometheus",
-        "definition": "label_values(node_uname_info{job=\"cominfra-stg\"}, instance)",
+        "definition": "label_values(node_uname_info{job=\"node-exporter\"}, nodename)",
         "error": null,
         "hide": 0,
         "includeAll": false,
@@ -2465,7 +2483,7 @@
         "multi": false,
         "name": "server",
         "options": [],
-        "query": "label_values(node_uname_info{job=\"cominfra-stg\"}, instance)",
+        "query": "label_values(node_uname_info{job=\"node-exporter\"}, nodename)",
         "refresh": 1,
         "regex": "/([^:]+):.*/",
         "skipUrlSync": false,
