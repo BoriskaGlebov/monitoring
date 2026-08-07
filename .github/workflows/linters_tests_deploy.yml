@@ -62,8 +62,6 @@ jobs:
           git checkout develop
           git pull origin develop            # Обновление кода из репозитория
 
-          docker compose down
-          docker stack rm monitoring
-          docker stack deploy -c docker-stack.yml monitoring
-          docker compose up -d --build
+          docker compose -f docker-compose.yaml -f docker-compose.monitoring-server.yml -f docker-compose.monitoring-agent.yml down
+          docker compose -f docker-compose.yaml -f docker-compose.monitoring-server.yml -f docker-compose.monitoring-agent.yml up -d --build
           EOF
