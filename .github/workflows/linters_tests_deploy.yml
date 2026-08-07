@@ -11,68 +11,31 @@ on:
       - develop
 
 jobs:
-  deploy_vpn_boriska:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'  # Выполняется только для ветки develop.
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4  # Клонирование репозитория
+#  deploy_help_blocks:
+#    runs-on: ubuntu-latest
+#    if: github.ref == 'refs/heads/main'  # Выполняется только для ветки main.
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v4  # Клонирование репозитория
+#
+#      - name: Set up SSH key
+#        uses: webfactory/ssh-agent@v0.5.3  # Настройка SSH-ключа
+#        with:
+#          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY2 }}  # Приватный ключ из секретов
+#
+#      - name: Add known hosts
+#        run: echo "${{ secrets.SERVER_IP2 }} $(ssh-keyscan -H ${{ secrets.SERVER_IP2 }})" >> ~/.ssh/known_hosts  # Добавление сервера в known_hosts
+#      - name: Test SSH connection
+#        run: |
+#          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER2 }}@${{ secrets.SERVER_IP2 }} "whoami" && echo PRIVET # Проверка подключения
+#
+#      - name: Deploy to server
+#        run: |
+#          ssh ${{ secrets.SERVER_USER2 }}@${{ secrets.SERVER_IP2 }} << 'EOF'
+#          cd test_zone/monitoring || exit  # Переход в директорию приложения
+#          git pull origin main            # Обновление кода из репозитория
+#          EOF
 
-      - name: Set up SSH key
-        uses: webfactory/ssh-agent@v0.5.3  # Настройка SSH-ключа
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # Приватный ключ из секретов
-
-      - name: Add known hosts
-        run: echo "${{ secrets.SERVER_IP }} $(ssh-keyscan -H ${{ secrets.SERVER_IP }})" >> ~/.ssh/known_hosts  # Добавление сервера в known_hosts
-      - name: Test SSH connection
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "whoami" && echo PRIVET # Проверка подключения
-
-      - name: Deploy to server
-        run: |
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-          cd production/monitoring || exit  # Переход в директорию приложения
-          git checkout main
-          git pull origin main            # Обновление кода из репозитория
-
-          TELEMT_SECRET_HELLO="${{ secrets.TELEMT_SECRET_HELLO }}"
-          TOML_FILE="./telemt-config/telemt.toml"
-
-          if grep -q '^\s*hello\s*=' "$TOML_FILE"; then
-            sed -i "s/^\s*hello\s*=.*/hello = \"$TELEMT_SECRET_HELLO\"/" "$TOML_FILE"
-          else
-            echo "hello = \"$TELEMT_SECRET_HELLO\"" >> "$TOML_FILE"
-          fi
-          docker compose down
-          docker stack rm monitoring
-          docker stack deploy -c docker-stack.yml monitoring
-          docker compose up -d --build
-          EOF
-  deploy_help_blocks:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'  # Выполняется только для ветки main.
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4  # Клонирование репозитория
-
-      - name: Set up SSH key
-        uses: webfactory/ssh-agent@v0.5.3  # Настройка SSH-ключа
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY2 }}  # Приватный ключ из секретов
-
-      - name: Add known hosts
-        run: echo "${{ secrets.SERVER_IP2 }} $(ssh-keyscan -H ${{ secrets.SERVER_IP2 }})" >> ~/.ssh/known_hosts  # Добавление сервера в known_hosts
-      - name: Test SSH connection
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER2 }}@${{ secrets.SERVER_IP2 }} "whoami" && echo PRIVET # Проверка подключения
-
-      - name: Deploy to server
-        run: |
-          ssh ${{ secrets.SERVER_USER2 }}@${{ secrets.SERVER_IP2 }} << 'EOF'
-          cd test_zone/monitoring || exit  # Переход в директорию приложения
-          git pull origin main            # Обновление кода из репозитория
-          EOF
   develop_vpn_boriska:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/develop'  # Выполняется только для ветки develop.
@@ -99,14 +62,6 @@ jobs:
           git checkout develop
           git pull origin develop            # Обновление кода из репозитория
 
-          TELEMT_SECRET_HELLO="${{ secrets.TELEMT_SECRET_HELLO }}"
-          TOML_FILE="./telemt-config/telemt.toml"
-
-          if grep -q '^\s*hello\s*=' "$TOML_FILE"; then
-            sed -i "s/^\s*hello\s*=.*/hello = \"$TELEMT_SECRET_HELLO\"/" "$TOML_FILE"
-          else
-            echo "hello = \"$TELEMT_SECRET_HELLO\"" >> "$TOML_FILE"
-          fi
           docker compose down
           docker stack rm monitoring
           docker stack deploy -c docker-stack.yml monitoring
