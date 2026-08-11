@@ -626,7 +626,8 @@
         {
           "expr": "100 - (avg by (cpu) (rate(node_cpu_seconds_total{mode=\"idle\",instance=~\"$server:.*\"}[$interval])) * 100)",
           "legendFormat": "core {{cpu}}",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "thresholds": [],
@@ -651,7 +652,7 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "unit": "percentunit",
+          "unit": "short",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -659,24 +660,13 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 0.7
-              },
-              {
-                "color": "red",
-                "value": 1.0
               }
             ]
           },
           "custom": {
             "drawStyle": "line",
-            "lineWidth": 2,
-            "fillOpacity": 10,
-            "thresholdsStyle": {
-              "mode": "area"
-            }
+            "lineWidth": 1,
+            "fillOpacity": 10
           }
         },
         "overrides": []
@@ -704,20 +694,30 @@
       "spaceLength": 10,
       "targets": [
         {
-          "expr": "node_load1{instance=~\"$server:.*\"} / scalar(count(count(node_cpu_seconds_total{instance=~\"$server:.*\"}) by (cpu)))",
-          "legendFormat": "load / cores",
+          "expr": "node_load1{instance=~\"$server:.*\"}",
+          "legendFormat": "1m",
           "refId": "A"
+        },
+        {
+          "expr": "node_load5{instance=~\"$server:.*\"}",
+          "legendFormat": "5m",
+          "refId": "B"
+        },
+        {
+          "expr": "node_load15{instance=~\"$server:.*\"}",
+          "legendFormat": "15m",
+          "refId": "C"
         }
       ],
       "thresholds": [],
       "timeRegions": [],
-      "title": "Load Trend",
+      "title": "Load Average (1m/5m/15m)",
       "type": "timeseries",
       "yaxis": {
         "align": false,
         "alignLevel": null
       },
-      "description": "Load average (1 мин), нормализованная на число ядер, в динамике. Зелёная зона — норма, жёлтая/красная — приближение к перегрузу/перегруз"
+      "description": "Load average сервера за 1/5/15 минут (сырые значения, без нормализации на число ядер)"
     },
     {
       "aliasColors": {
