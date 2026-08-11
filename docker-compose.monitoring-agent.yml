@@ -50,9 +50,11 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./alloy-config.alloy:/etc/alloy/config.alloy:ro
+      - alloy_data:/var/lib/alloy/data
     command:
       - run
       - --server.http.listen-addr=0.0.0.0:12345
+      - --storage.path=/var/lib/alloy/data
       - /etc/alloy/config.alloy
     ports:
       - "127.0.0.1:12345:12345"
@@ -61,3 +63,7 @@ services:
         limits:
           cpus: "0.5"
           memory: 256M
+
+volumes:
+  alloy_data:
+    name: alloy_data
