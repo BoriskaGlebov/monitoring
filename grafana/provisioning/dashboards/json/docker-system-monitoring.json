@@ -1791,7 +1791,7 @@
     {
       "id": 37,
       "title": "Memory Usage per Container (current)",
-      "description": "Текущее потребление памяти каждым контейнером прямо сейчас",
+      "description": "Текущее потребление памяти каждым контейнером в байтах (без цветовых порогов — единого разумного лимита для всех контейнеров нет)",
       "type": "table",
       "datasource": {
         "type": "prometheus",
@@ -1819,16 +1819,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(245, 54, 54, 0.9)",
+                "color": "text",
                 "value": 0
-              },
-              {
-                "color": "rgba(237, 129, 40, 0.89)",
-                "value": 10000000
-              },
-              {
-                "color": "rgba(50, 172, 45, 0.97)",
-                "value": 25000000
               }
             ]
           },
@@ -1977,8 +1969,8 @@
     },
     {
       "id": 35,
-      "title": "Remaining Memory per Container (current)",
-      "description": "Сколько памяти осталось до лимита у каждого контейнера прямо сейчас",
+      "title": "Memory Usage % of Limit (current)",
+      "description": "Процент от заданного лимита памяти — только для контейнеров, у которых лимит реально выставлен (не 0 и не \"безлимитный\"). Зелёный <75%, жёлтый 75-90%, красный >90%",
       "type": "table",
       "datasource": {
         "type": "prometheus",
@@ -2006,20 +1998,20 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(50, 172, 45, 0.97)",
+                "color": "green",
                 "value": 0
               },
               {
-                "color": "rgba(237, 129, 40, 0.89)",
-                "value": 80
+                "color": "yellow",
+                "value": 75
               },
               {
-                "color": "rgba(245, 54, 54, 0.9)",
+                "color": "red",
                 "value": 90
               }
             ]
           },
-          "unit": "bytes"
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -2031,9 +2023,9 @@
         {
           "refId": "A",
           "datasource": null,
-          "expr": "container_spec_memory_limit_bytes{name=~\".+\"} - container_memory_usage_bytes{name=~\".+\"}",
+          "instant": true,
           "legendFormat": "{{name}}",
-          "instant": true
+          "expr": "(container_memory_usage_bytes{name=~\".+\"} / container_spec_memory_limit_bytes{name=~\".+\"} * 100)\nand (container_spec_memory_limit_bytes{name=~\".+\"} > 0)\nand (container_spec_memory_limit_bytes{name=~\".+\"} < 1e18)"
         }
       ],
       "transformations": [
@@ -2052,7 +2044,7 @@
     {
       "id": 36,
       "title": "Memory Limit per Container (current)",
-      "description": "Заданный лимит памяти у каждого контейнера",
+      "description": "Заданный лимит памяти по каждому контейнеру (0 или очень большое число = лимит не выставлен)",
       "type": "table",
       "datasource": {
         "type": "prometheus",
@@ -2080,16 +2072,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(245, 54, 54, 0.9)",
+                "color": "text",
                 "value": 0
-              },
-              {
-                "color": "rgba(237, 129, 40, 0.89)",
-                "value": 10000000
-              },
-              {
-                "color": "rgba(50, 172, 45, 0.97)",
-                "value": 25000000
               }
             ]
           },
