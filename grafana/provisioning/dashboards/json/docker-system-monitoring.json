@@ -209,7 +209,7 @@
         "y": 0
       },
       "id": 26,
-      "type": "stat",
+      "type": "gauge",
       "fieldConfig": {
         "defaults": {
           "unit": "percentunit",
@@ -232,7 +232,9 @@
               }
             ]
           },
-          "custom": {}
+          "custom": {},
+          "min": 0,
+          "max": 1
         },
         "overrides": []
       },
@@ -245,10 +247,8 @@
           "values": false
         },
         "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "background",
-        "graphMode": "area",
-        "justifyMode": "auto"
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
       }
     },
     {
@@ -273,7 +273,7 @@
         "y": 0
       },
       "id": 25,
-      "type": "stat",
+      "type": "gauge",
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -296,7 +296,9 @@
               }
             ]
           },
-          "custom": {}
+          "custom": {},
+          "min": 0,
+          "max": 100
         },
         "overrides": []
       },
@@ -309,10 +311,8 @@
           "values": false
         },
         "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "background",
-        "graphMode": "area",
-        "justifyMode": "auto"
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
       }
     },
     {
@@ -332,7 +332,7 @@
         "y": 0
       },
       "id": 30,
-      "type": "stat",
+      "type": "gauge",
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -355,7 +355,9 @@
               }
             ]
           },
-          "custom": {}
+          "custom": {},
+          "min": 0,
+          "max": 100
         },
         "overrides": []
       },
@@ -368,10 +370,8 @@
           "values": false
         },
         "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "background",
-        "graphMode": "area",
-        "justifyMode": "auto"
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
       }
     },
     {
@@ -400,7 +400,9 @@
               }
             ]
           },
-          "custom": {}
+          "custom": {},
+          "min": 0,
+          "max": 2
         },
         "overrides": []
       },
@@ -423,10 +425,8 @@
           "values": false
         },
         "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "background",
-        "graphMode": "area",
-        "justifyMode": "auto"
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
       },
       "pluginVersion": "7.3.4",
       "targets": [
@@ -438,7 +438,7 @@
       "timeFrom": null,
       "timeShift": null,
       "title": "Load",
-      "type": "stat"
+      "type": "gauge"
     },
     {
       "aliasColors": {
