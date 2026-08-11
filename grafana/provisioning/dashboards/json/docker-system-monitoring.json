@@ -1422,7 +1422,7 @@
           "displayMode": "table",
           "enableFacetedFilter": false,
           "overflow": "ellipsis",
-          "placement": "bottom",
+          "placement": "right",
           "showLegend": true
         },
         "tooltip": {
@@ -1531,7 +1531,7 @@
           "displayMode": "table",
           "enableFacetedFilter": false,
           "overflow": "ellipsis",
-          "placement": "bottom",
+          "placement": "right",
           "showLegend": true
         },
         "tooltip": {
@@ -1790,8 +1790,8 @@
     },
     {
       "id": 37,
-      "title": "Usage memory",
-      "description": "Таблица: контейнеры с наибольшим потреблением памяти",
+      "title": "Memory Usage per Container (current)",
+      "description": "Текущее потребление памяти каждым контейнером прямо сейчас",
       "type": "table",
       "datasource": {
         "type": "prometheus",
@@ -1832,7 +1832,7 @@
               }
             ]
           },
-          "unit": "decbytes"
+          "unit": "bytes"
         },
         "overrides": []
       },
@@ -1844,42 +1844,19 @@
         {
           "refId": "A",
           "datasource": null,
-          "expr": "sum(container_spec_memory_limit_bytes{name=~\".+\"} - container_memory_usage_bytes{name=~\".+\"}) by (name) ",
-          "legendFormat": "{{name}}",
-          "intervalFactor": 2,
-          "step": 240,
-          "metric": "",
-          "hide": true
-        },
-        {
-          "refId": "B",
-          "datasource": null,
-          "expr": "sum(container_spec_memory_limit_bytes{name=~\".+\"}) by (name) ",
-          "legendFormat": "{{name}}",
-          "intervalFactor": 2,
-          "step": 240,
-          "hide": true
-        },
-        {
-          "refId": "C",
-          "datasource": null,
           "expr": "container_memory_usage_bytes{name=~\".+\"}",
           "legendFormat": "{{name}}",
-          "intervalFactor": 2,
-          "step": 240
+          "instant": true
         }
       ],
       "transformations": [
         {
-          "group": "reduce",
-          "kind": "Transformation",
-          "spec": {
-            "options": {
-              "includeTimeField": false,
-              "reducers": [
-                "lastNotNull"
-              ]
-            }
+          "id": "reduce",
+          "options": {
+            "includeTimeField": false,
+            "reducers": [
+              "lastNotNull"
+            ]
           }
         }
       ],
@@ -2000,8 +1977,8 @@
     },
     {
       "id": 35,
-      "title": "Remaining memory",
-      "description": "Таблица: сколько памяти осталось до лимита по контейнерам",
+      "title": "Remaining Memory per Container (current)",
+      "description": "Сколько памяти осталось до лимита у каждого контейнера прямо сейчас",
       "type": "table",
       "datasource": {
         "type": "prometheus",
@@ -2042,7 +2019,7 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "bytes"
         },
         "overrides": []
       },
@@ -2054,42 +2031,19 @@
         {
           "refId": "A",
           "datasource": null,
-          "expr": "sum(100 - ((container_spec_memory_limit_bytes{name=~\".+\"} - container_memory_usage_bytes{name=~\".+\"})  * 100 / container_spec_memory_limit_bytes{name=~\".+\"}) ) by (name) ",
+          "expr": "container_spec_memory_limit_bytes{name=~\".+\"} - container_memory_usage_bytes{name=~\".+\"}",
           "legendFormat": "{{name}}",
-          "intervalFactor": 2,
-          "step": 240,
-          "metric": ""
-        },
-        {
-          "refId": "B",
-          "datasource": null,
-          "expr": "sum(container_spec_memory_limit_bytes{name=~\".+\"}) by (name) ",
-          "legendFormat": "{{name}}",
-          "intervalFactor": 2,
-          "step": 240,
-          "hide": true
-        },
-        {
-          "refId": "C",
-          "datasource": null,
-          "expr": "container_memory_usage_bytes{name=~\".+\"}",
-          "legendFormat": "{{name}}",
-          "intervalFactor": 2,
-          "step": 240,
-          "hide": true
+          "instant": true
         }
       ],
       "transformations": [
         {
-          "group": "reduce",
-          "kind": "Transformation",
-          "spec": {
-            "options": {
-              "includeTimeField": false,
-              "reducers": [
-                "lastNotNull"
-              ]
-            }
+          "id": "reduce",
+          "options": {
+            "includeTimeField": false,
+            "reducers": [
+              "lastNotNull"
+            ]
           }
         }
       ],
@@ -2097,8 +2051,8 @@
     },
     {
       "id": 36,
-      "title": "Limit memory",
-      "description": "Таблица: заданные лимиты памяти по контейнерам",
+      "title": "Memory Limit per Container (current)",
+      "description": "Заданный лимит памяти у каждого контейнера",
       "type": "table",
       "datasource": {
         "type": "prometheus",
@@ -2139,7 +2093,7 @@
               }
             ]
           },
-          "unit": "decbytes"
+          "unit": "bytes"
         },
         "overrides": []
       },
@@ -2151,42 +2105,19 @@
         {
           "refId": "A",
           "datasource": null,
-          "expr": "sum(container_spec_memory_limit_bytes{name=~\".+\"} - container_memory_usage_bytes{name=~\".+\"}) by (name) ",
+          "expr": "container_spec_memory_limit_bytes{name=~\".+\"}",
           "legendFormat": "{{name}}",
-          "intervalFactor": 2,
-          "step": 240,
-          "metric": "",
-          "hide": true
-        },
-        {
-          "refId": "B",
-          "datasource": null,
-          "expr": "sum(container_spec_memory_limit_bytes{name=~\".+\"}) by (name) ",
-          "legendFormat": "{{name}}",
-          "intervalFactor": 2,
-          "step": 240
-        },
-        {
-          "refId": "C",
-          "datasource": null,
-          "expr": "container_memory_usage_bytes{name=~\".+\"}",
-          "legendFormat": "{{name}}",
-          "intervalFactor": 2,
-          "step": 240,
-          "hide": true
+          "instant": true
         }
       ],
       "transformations": [
         {
-          "group": "reduce",
-          "kind": "Transformation",
-          "spec": {
-            "options": {
-              "includeTimeField": false,
-              "reducers": [
-                "lastNotNull"
-              ]
-            }
+          "id": "reduce",
+          "options": {
+            "includeTimeField": false,
+            "reducers": [
+              "lastNotNull"
+            ]
           }
         }
       ],
