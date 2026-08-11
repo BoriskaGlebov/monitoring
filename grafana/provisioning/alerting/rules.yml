@@ -212,3 +212,33 @@ groups:
               conditions:
                 - evaluator: { type: gt, params: [-1] }
               refId: B
+
+      - uid: app-error-spike
+        title: "Много ошибок в логах (api/vpn_bot)"
+        condition: B
+        for: 0m
+        noDataState: OK
+        execErrState: Alerting
+        labels:
+          severity: warning
+        annotations:
+          summary: "В контейнере {{ $labels.container }} за 5 минут {{ $values.A }} строк с ERROR"
+          logs_link: "https://vpn-boriska.ru/grafana/d/logs-overview/logs?var-container={{ $labels.container }}&from=now-15m&to=now"
+        data:
+          - refId: A
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: loki
+            model:
+              expr: >
+                sum by (container) (count_over_time({container=~"api|vpn_bot"} |~ "(?i)error" [5m]))
+              instant: true
+              refId: A
+          - refId: B
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: "__expr__"
+            model:
+              type: threshold
+              expression: A
+              conditions:
+                - evaluator: { type: gt, params: [10] }
+              refId: B
