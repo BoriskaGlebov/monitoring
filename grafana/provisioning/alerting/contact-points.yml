@@ -9,11 +9,13 @@ contactPoints:
         settings:
           bottoken: $TELEGRAM_BOT_TOKEN
           chatid: $TELEGRAM_CHAT_ID
+          parse_mode: HTML
           message: |
             {{ range .Alerts }}
-            {{ if eq .Status "firing" }}🔴 ПРОБЛЕМА{{ else }}✅ РЕШЕНО{{ end }} — {{ .Labels.alertname }}
+            {{ if eq .Status "firing" }}🔴 <b>ПРОБЛЕМА</b>{{ else }}✅ <b>РЕШЕНО</b>{{ end }} — {{ .Labels.alertname }}
             Сервер: {{ .Labels.instance }}
             {{ .Annotations.summary }}
             {{ if eq .Status "firing" }}С {{ .StartsAt.Format "02.01 15:04" }}{{ else }}Длилось до {{ .EndsAt.Format "02.01 15:04" }}{{ end }}
+            <a href="{{ .GeneratorURL }}">Открыть в Grafana</a>{{ if eq .Status "firing" }} | <a href="{{ .SilenceURL }}">Заглушить</a>{{ end }}
             {{ end }}
         disableResolveMessage: false
