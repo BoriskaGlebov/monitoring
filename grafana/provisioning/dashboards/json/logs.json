@@ -1,0 +1,103 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {"type": "grafana", "uid": "-- Grafana --"},
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "liveNow": true,
+  "panels": [
+    {
+      "id": 1,
+      "title": "Объём логов по контейнерам",
+      "description": "Сколько строк логов в минуту пишет каждый контейнер — резкий всплеск часто значит проблему (краш-луп, спам ошибок)",
+      "type": "timeseries",
+      "datasource": {"type": "loki", "uid": "loki"},
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 0},
+      "fieldConfig": {
+        "defaults": {"unit": "short", "custom": {"drawStyle": "bars", "fillOpacity": 50, "stacking": {"mode": "normal", "group": "A"}}},
+        "overrides": []
+      },
+      "options": {
+        "legend": {"displayMode": "list", "placement": "bottom"},
+        "tooltip": {"mode": "multi"}
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {"type": "loki", "uid": "loki"},
+          "expr": "sum by (container) (count_over_time({container=~\"$container\"}[$__auto]))",
+          "legendFormat": "{{container}}"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Логи",
+      "description": "Сырые логи выбранных контейнеров",
+      "type": "logs",
+      "datasource": {"type": "loki", "uid": "loki"},
+      "gridPos": {"h": 16, "w": 24, "x": 0, "y": 8},
+      "options": {
+        "showTime": true,
+        "showLabels": true,
+        "showCommonLabels": false,
+        "wrapLogMessage": true,
+        "prettifyLogMessage": false,
+        "enableLogDetails": true,
+        "sortOrder": "Descending",
+        "dedupStrategy": "none"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {"type": "loki", "uid": "loki"},
+          "expr": "{container=~\"$container\"}"
+        }
+      ]
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "tags": ["logs"],
+  "templating": {
+    "list": [
+      {
+        "name": "container",
+        "label": "Container",
+        "type": "query",
+        "datasource": {"type": "loki", "uid": "loki"},
+        "definition": "label_values(container)",
+        "query": {"refId": "container-variable", "label": "container"},
+        "current": {"text": ".+", "value": ".+"},
+        "options": [],
+        "includeAll": true,
+        "allValue": ".+",
+        "multi": false,
+        "hide": 0,
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "skipUrlSync": false
+      }
+    ]
+  },
+  "time": {"from": "now-1h", "to": "now"},
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Logs",
+  "uid": null,
+  "version": 1
+}
