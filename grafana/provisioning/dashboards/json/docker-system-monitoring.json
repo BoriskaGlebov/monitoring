@@ -377,11 +377,10 @@
     {
       "cacheTimeout": null,
       "datasource": "Prometheus",
-      "description": "Load average (1 мин), нормализованная на число ядер — 1.0 значит все ядра заняты",
+      "description": "Load average (1 мин), нормализованная на число ядер. Зелёная зона — норма, жёлтая/красная — приближение к перегрузу/перегруз",
       "fieldConfig": {
         "defaults": {
           "unit": "percentunit",
-          "decimals": 2,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -400,9 +399,14 @@
               }
             ]
           },
-          "custom": {},
-          "min": 0,
-          "max": 2
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "thresholdsStyle": {
+              "mode": "area"
+            }
+          }
         },
         "overrides": []
       },
@@ -417,28 +421,26 @@
       "links": [],
       "maxDataPoints": 100,
       "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
         },
-        "orientation": "auto",
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
+        "tooltip": {
+          "mode": "single"
+        }
       },
       "pluginVersion": "7.3.4",
       "targets": [
         {
           "expr": "node_load1{instance=~\"$server:.*\"} / scalar(count(count(node_cpu_seconds_total{instance=~\"$server:.*\"}) by (cpu)))",
+          "legendFormat": "load / cores",
           "refId": "A"
         }
       ],
       "timeFrom": null,
       "timeShift": null,
       "title": "Load",
-      "type": "gauge"
+      "type": "timeseries"
     },
     {
       "aliasColors": {
@@ -556,7 +558,6 @@
       "aliasColors": {
         "{id=\"/\",instance=\"cadvisor:8080\",job=\"prometheus\"}": "#BA43A9"
       },
-      "bars": false,
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
@@ -564,13 +565,33 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
+          "unit": "percent",
+          "decimals": 0,
+          "min": 0,
+          "max": 100,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 85
+              }
+            ]
+          },
           "custom": {}
         },
         "overrides": []
       },
-      "fill": 1,
       "fillGradient": 0,
-      "grid": {},
       "gridPos": {
         "h": 6,
         "w": 4,
@@ -579,35 +600,32 @@
       },
       "hiddenSeries": false,
       "id": 5,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null as zero",
       "options": {
-        "alertThreshold": true
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "orientation": "auto",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
       },
       "percentage": false,
       "pluginVersion": "7.3.4",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
       "spaceLength": 10,
-      "stack": false,
       "steppedLine": false,
       "targets": [
         {
-          "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\",instance=~\"$server:.*\"}[$interval])) * 100)",
-          "legendFormat": "CPU Busy %",
+          "expr": "100 - (avg by (cpu) (rate(node_cpu_seconds_total{mode=\"idle\",instance=~\"$server:.*\"}[$interval])) * 100)",
+          "legendFormat": "core {{cpu}}",
           "refId": "A"
         }
       ],
@@ -616,49 +634,15 @@
       "timeRegions": [],
       "timeShift": null,
       "title": "CPU Usage",
-      "tooltip": {
-        "msResolution": true,
-        "shared": true,
-        "sort": 0,
-        "value_type": "cumulative"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": false,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:1263",
-          "format": "percent",
-          "label": "",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:1264",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": false
-        }
-      ],
+      "type": "gauge",
       "yaxis": {
         "align": false,
         "alignLevel": null
       },
-      "description": "Общая загрузка CPU хоста (все ядра усреднённо), в процентах"
+      "description": "Загрузка каждого ядра CPU отдельно (%)"
     },
     {
       "aliasColors": {},
-      "bars": false,
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
@@ -667,11 +651,36 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "unit": "percentunit",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 0.7
+              },
+              {
+                "color": "red",
+                "value": 1.0
+              }
+            ]
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "thresholdsStyle": {
+              "mode": "area"
+            }
+          }
         },
         "overrides": []
       },
-      "fill": 1,
       "fillGradient": 0,
       "gridPos": {
         "h": 6,
@@ -681,104 +690,34 @@
       },
       "hiddenSeries": false,
       "id": 28,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
       "links": [],
-      "nullPointMode": "connected",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
       },
-      "percentage": false,
       "pluginVersion": "7.3.4",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
       "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
       "targets": [
         {
-          "expr": "node_load1{instance=~\"$server:.*\"}",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 2,
-          "legendFormat": "1m",
-          "refId": "B",
-          "step": 600
-        },
-        {
-          "expr": "node_load5{instance=~\"$server:.*\"}",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 2,
-          "legendFormat": "5m",
-          "refId": "C",
-          "step": 600
-        },
-        {
-          "expr": "node_load15{instance=~\"$server:.*\"}",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 2,
-          "legendFormat": "15m",
-          "refId": "D",
-          "step": 600
+          "expr": "node_load1{instance=~\"$server:.*\"} / scalar(count(count(node_cpu_seconds_total{instance=~\"$server:.*\"}) by (cpu)))",
+          "legendFormat": "load / cores",
+          "refId": "A"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
-      "title": "Load",
-      "tooltip": {
-        "msResolution": false,
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": false,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:545",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:546",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": false
-        }
-      ],
+      "title": "Load Trend",
+      "type": "timeseries",
       "yaxis": {
         "align": false,
         "alignLevel": null
       },
-      "description": "Load average за 1/5/15 минут — сколько процессов в среднем ждут CPU"
+      "description": "Load average (1 мин), нормализованная на число ядер, в динамике. Зелёная зона — норма, жёлтая/красная — приближение к перегрузу/перегруз"
     },
     {
       "aliasColors": {
