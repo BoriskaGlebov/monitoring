@@ -135,7 +135,7 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: "Load average на {{ $labels.instance }} втрое выше числа ядер уже 10+ минут"
+          summary: "Load average на {{ $labels.instance }} в четыре раза выше числа ядер уже 10+ минут"
         data:
           - refId: A
             relativeTimeRange: { from: 300, to: 0 }
@@ -152,7 +152,7 @@ groups:
               type: threshold
               expression: A
               conditions:
-                - evaluator: { type: gt, params: [3] }
+                - evaluator: { type: gt, params: [4] }
               refId: B
 
       - uid: cpu-overload-others
