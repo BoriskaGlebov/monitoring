@@ -1,0 +1,29 @@
+discovery.docker "containers" {
+  host = "unix:///var/run/docker.sock"
+}
+
+discovery.relabel "containers" {
+  targets = discovery.docker.containers.targets
+
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "/(.*)"
+    target_label  = "container"
+  }
+}
+
+loki.source.docker "default" {
+  host       = "unix:///var/run/docker.sock"
+  targets    = discovery.relabel.containers.output
+  labels     = {"job" = "docker"}
+  forward_to = [loki.write.default.receiver]
+}
+
+// TODO: при развёртывании на других серверах (help-blocks.ru, x-ray-boriska.pro и т.д.)
+// заменить на публичный адрес центрального Loki, "loki:3100" резолвится только
+// пока Alloy живёт в одном docker-compose проекте с самим Loki (сейчас — vm906802).
+loki.write "default" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}

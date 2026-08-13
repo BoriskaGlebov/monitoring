@@ -1,9 +1,10 @@
 #!/bin/bash
 
-#!/bin/bash
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/.env"
 
-WEBHOOK_URL="https://api.telegram.org/bot6796421307:AAHmQ9jvbJl9kslUnPR5W5beV5ECAuesWAs/sendMessage"
-CHAT_ID="439653349"
+WEBHOOK_URL="https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage"
+CHAT_ID="$TELEGRAM_CHAT_ID"
 COMMON_FILE="/home/vpn_user/test_zone/vpn_bot/docker-compose.common.yml"
 COMPOSE_PATH="/home/vpn_user/test_zone/vpn_bot/docker-compose.develop.yml"
 

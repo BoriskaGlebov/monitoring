@@ -1,0 +1,244 @@
+apiVersion: 1
+
+groups:
+  - orgId: 1
+    name: infra-alerts
+    folder: Infra Alerts
+    interval: 1m
+    rules:
+
+      - uid: exporter-down
+        title: "Экспортёр недоступен"
+        condition: B
+        for: 2m
+        noDataState: NoData
+        execErrState: Alerting
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.job }} на {{ $labels.instance }} не отвечает уже 2+ минуты"
+        data:
+          - refId: A
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: prometheus
+            model:
+              expr: "up == 0"
+              instant: true
+              refId: A
+          - refId: B
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: "__expr__"
+            model:
+              type: threshold
+              expression: A
+              conditions:
+                - evaluator: { type: gt, params: [0] }
+              refId: B
+
+      - uid: disk-almost-full
+        title: "Диск почти заполнен"
+        condition: B
+        for: 5m
+        noDataState: OK
+        execErrState: Alerting
+        labels:
+          severity: critical
+        annotations:
+          summary: "Диск на {{ $labels.instance }} занят более чем на 90%"
+        data:
+          - refId: A
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: prometheus
+            model:
+              expr: >
+                max by (instance) (
+                  (node_filesystem_size_bytes{fstype=~"xfs|ext4"} - node_filesystem_free_bytes{fstype=~"xfs|ext4"})
+                  / node_filesystem_size_bytes{fstype=~"xfs|ext4"}
+                )
+              instant: true
+              refId: A
+          - refId: B
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: "__expr__"
+            model:
+              type: threshold
+              expression: A
+              conditions:
+                - evaluator: { type: gt, params: [0.9] }
+              refId: B
+
+      - uid: memory-high
+        title: "Память заполнена"
+        condition: B
+        for: 10m
+        noDataState: OK
+        execErrState: Alerting
+        labels:
+          severity: warning
+        annotations:
+          summary: "Занято более 90% RAM на {{ $labels.instance }}"
+        data:
+          - refId: A
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: prometheus
+            model:
+              expr: >
+                ((node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes) * 100
+              instant: true
+              refId: A
+          - refId: B
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: "__expr__"
+            model:
+              type: threshold
+              expression: A
+              conditions:
+                - evaluator: { type: gt, params: [90] }
+              refId: B
+
+      - uid: swap-high
+        title: "Swap сильно используется"
+        condition: B
+        for: 10m
+        noDataState: OK
+        execErrState: Alerting
+        labels:
+          severity: warning
+        annotations:
+          summary: "Занято более 50% swap на {{ $labels.instance }} — вероятна нехватка RAM"
+        data:
+          - refId: A
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: prometheus
+            model:
+              expr: >
+                (node_memory_SwapTotal_bytes - node_memory_SwapFree_bytes) / node_memory_SwapTotal_bytes * 100
+                and node_memory_SwapTotal_bytes > 0
+              instant: true
+              refId: A
+          - refId: B
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: "__expr__"
+            model:
+              type: threshold
+              expression: A
+              conditions:
+                - evaluator: { type: gt, params: [50] }
+              refId: B
+
+      - uid: cpu-overload-vpn-boriska
+        title: "CPU перегружен (vpn-boriska.ru)"
+        condition: B
+        for: 10m
+        noDataState: OK
+        execErrState: Alerting
+        labels:
+          severity: warning
+        annotations:
+          summary: "Load average на {{ $labels.instance }} в четыре раза выше числа ядер уже 10+ минут"
+        data:
+          - refId: A
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: prometheus
+            model:
+              expr: >
+                node_load1{instance="vpn-boriska.ru:9100"} / on(instance) group_left() count by (instance) (count by (instance, cpu) (node_cpu_seconds_total{instance="vpn-boriska.ru:9100"}))
+              instant: true
+              refId: A
+          - refId: B
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: "__expr__"
+            model:
+              type: threshold
+              expression: A
+              conditions:
+                - evaluator: { type: gt, params: [4] }
+              refId: B
+
+      - uid: cpu-overload-others
+        title: "CPU перегружен"
+        condition: B
+        for: 10m
+        noDataState: OK
+        execErrState: Alerting
+        labels:
+          severity: warning
+        annotations:
+          summary: "Load average на {{ $labels.instance }} превышает число ядер уже 10+ минут"
+        data:
+          - refId: A
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: prometheus
+            model:
+              expr: >
+                node_load1{instance!="vpn-boriska.ru:9100"} / on(instance) group_left() count by (instance) (count by (instance, cpu) (node_cpu_seconds_total{instance!="vpn-boriska.ru:9100"}))
+              instant: true
+              refId: A
+          - refId: B
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: "__expr__"
+            model:
+              type: threshold
+              expression: A
+              conditions:
+                - evaluator: { type: gt, params: [1] }
+              refId: B
+
+      - uid: containers-dropped
+        title: "Стало меньше контейнеров"
+        condition: B
+        for: 5m
+        noDataState: OK
+        execErrState: Alerting
+        labels:
+          severity: critical
+        annotations:
+          summary: "Число запущенных контейнеров упало по сравнению с часом назад"
+        data:
+          - refId: A
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: prometheus
+            model:
+              expr: >
+                count(container_last_seen) < count(container_last_seen offset 1h) - 1
+              instant: true
+              refId: A
+          - refId: B
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: "__expr__"
+            model:
+              type: threshold
+              expression: A
+              conditions:
+                - evaluator: { type: gt, params: [-1] }
+              refId: B
+
+      - uid: app-error-spike
+        title: "Много ошибок в логах (api/vpn_bot)"
+        condition: B
+        for: 0m
+        noDataState: OK
+        execErrState: Alerting
+        labels:
+          severity: warning
+        annotations:
+          summary: "В контейнере {{ $labels.container }} за 5 минут {{ $values.A }} строк с ERROR"
+          logs_link: "https://vpn-boriska.ru/grafana/d/logs-overview/logs?var-container={{ $labels.container }}&from=now-15m&to=now"
+        data:
+          - refId: A
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: loki
+            model:
+              expr: >
+                sum by (container) (count_over_time({container=~"api|vpn_bot"} |~ "(?i)error" [5m]))
+              instant: true
+              refId: A
+          - refId: B
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: "__expr__"
+            model:
+              type: threshold
+              expression: A
+              conditions:
+                - evaluator: { type: gt, params: [10] }
+              refId: B
