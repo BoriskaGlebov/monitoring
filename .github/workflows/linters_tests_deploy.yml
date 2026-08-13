@@ -62,6 +62,12 @@ jobs:
           git checkout develop
           git pull origin develop            # Обновление кода из репозитория
 
+          rm -f .env
+          echo "GF_ADMIN_USER=${{ secrets.GF_ADMIN_USER }}" >> .env
+          echo "GF_ADMIN_PASSWORD=${{ secrets.GF_ADMIN_PASSWORD }}" >> .env
+          echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" >> .env
+          echo "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}" >> .env
+
           docker compose -f docker-compose.yaml -f docker-compose.monitoring-server.yml -f docker-compose.monitoring-agent.yml down
           docker compose -f docker-compose.yaml -f docker-compose.monitoring-server.yml -f docker-compose.monitoring-agent.yml up -d --build
           EOF

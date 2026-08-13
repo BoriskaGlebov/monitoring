@@ -1,14 +1,13 @@
 #!/bin/bash
 
-#!/bin/bash
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/.env"
 
-WEBHOOK_URL="https://api.telegram.org/bot6796421307:AAHmQ9jvbJl9kslUnPR5W5beV5ECAuesWAs/sendMessage"
-CHAT_ID="439653349"
-COMPOSE_PATH="/home/prod_server/production/monitoring/docker-compose.yaml"
-
+WEBHOOK_URL="https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage"
+CHAT_ID="$TELEGRAM_CHAT_ID"
 
 # Выполняем обновление и сохраняем вывод
-OUTPUT=$(certbot renew --deploy-hook "docker service update --force monitoring_nginx" 2>&1)
+OUTPUT=$(certbot renew --deploy-hook "docker restart nginx" 2>&1)
 EXIT_CODE=$?
 # Получаем имя хоста
 SERVER_NAME="vpn-boriska"

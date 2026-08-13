@@ -1,160 +1,110 @@
-# Monitoring — контейнерная платформа мониторинга и проксирования
+# Monitoring
 
-## Краткое описание
-Проект содержит конфигурации и Docker Compose стек для запуска компонентов мониторинга и обратного проксирования:
-- Nginx (SSL, обратное проксирование для Grafana/Prometheus)
-- Telemt (telemetry / телеметрический сервис)
-- (Опционально) экспортеры и дополнительные сервисы для Prometheus
-- Grafana для визуализации метрик
+Мониторинг серверов и Docker-контейнеров: метрики (Prometheus + Grafana), логи (Loki + Alloy), алерты в Telegram. Плюс nginx как reverse proxy и telemt-конфиг (не используется прямо сейчас, оставлен на будущее).
 
-Цель — собирать метрики, визуализировать их в Grafana и безопасно публиковать интерфейсы через HTTPS.
+## Архитектура
 
-## Содержание репозитория (ключевые файлы/папки)
-- `docker-compose.yaml` — основной compose-файл (nginx, telemt и т.п.)
-- `docker-stack.yml` — стек для Docker Swarm (если используется)
-- `nginx_web.conf` — конфигурация Nginx (HTTP->HTTPS, прокси `/grafana` и `/prometheus`, ACME)
-- `telemt-config/telemt.toml` — конфигурация telemt (порт 443, TLS, API)
-- `prometheus.yml` — конфигурация Prometheus (если присутствует)
-- `grafana_dashboards/` — JSON-файлы/дашборды для импорта в Grafana
-- `socks5_proxy/` — файлы для socks5 proxy (закомментировано в compose)
-- `send_telegram.sh`, `send_telegram_help_blocks.sh` — скрипты отправки уведомлений в Telegram
-- `.env` — переменные окружения (не хранить в репозитории)
+Стек развёрнут как обычный `docker compose` (без Docker Swarm) и состоит из трёх файлов:
+
+- **`docker-compose.yaml`** — nginx (host network, HTTPS-терминация, reverse proxy на Grafana/Prometheus)
+- **`docker-compose.monitoring-server.yml`** — централизованная часть, один экземпляр на "главном" сервере:
+  - Prometheus — хранит метрики
+  - Grafana — дашборды и алертинг
+  - Loki — хранит логи
+- **`docker-compose.monitoring-agent.yml`** — агенты, по одному набору на **каждый** мониторимый сервер:
+  - cAdvisor — метрики Docker-контейнеров
+  - node-exporter — метрики самого хоста (CPU/RAM/диск/сеть)
+  - Alloy — собирает логи всех контейнеров хоста и шлёт их в Loki
+
+Все три файла запускаются вместе через `docker compose -f docker-compose.yaml -f docker-compose.monitoring-server.yml -f docker-compose.monitoring-agent.yml up -d` — сейчас так развёрнуто на одном сервере (`vpn-boriska.ru`), остальные пока мониторятся только в конфиге (см. `prometheus.yml`), агенты на них ещё не подняты.
+
+Grafana настроена полностью **как код** — датасорсы, дашборды и правила алертов лежат в `grafana/provisioning/` и подхватываются автоматически при старте/на лету, руками через UI ничего настраивать не нужно (и не стоит — правки в UI не переживут следующий деплой).
+
+## Содержимое репозитория
+
+| Путь | Что это |
+|---|---|
+| `docker-compose.yaml` | nginx |
+| `docker-compose.monitoring-server.yml` | Prometheus, Grafana, Loki |
+| `docker-compose.monitoring-agent.yml` | cAdvisor, node-exporter, Alloy |
+| `prometheus.yml` | конфиг Prometheus (scrape-таргеты) |
+| `loki-config.yml` | конфиг Loki (single-binary, filesystem storage) |
+| `alloy-config.alloy` | конфиг Alloy (сбор логов контейнеров через Docker-сокет) |
+| `nginx_web.conf` | reverse proxy: `/grafana/`, `/prometheus/`, ACME для certbot |
+| `grafana/provisioning/datasources/` | Prometheus + Loki датасорсы |
+| `grafana/provisioning/dashboards/` | дашборды (host/containers/logs/alerts) как JSON |
+| `grafana/provisioning/alerting/` | contact points, notification policy, правила алертов |
+| `send_telegram.sh` | cron-хук `certbot renew` на этом сервере — шлёт статус обновления сертификатов в Telegram |
+| `send_telegram_help_blocks.sh` | то же самое, для сервера help-blocks.ru |
+| `telemt-config/` | конфиг telemt (Telegram MTProto-прокси) — сейчас не используется ни одним compose-файлом, оставлено для возможного будущего применения |
+| `grafana_dashboards/` | старые вручную экспортированные дашборды, не подключены — актуальные лежат в `grafana/provisioning/dashboards/` |
+| `.env.example` | шаблон переменных окружения |
+| `QUICKStart.md` | настройка нового сервера с нуля (SSH-доступ + первичное обслуживание) |
 
 ## Быстрый старт
-1. Подготовьте файл `.env` (если есть `.env.example`, скопируйте его и заполните):
+
+1. Скопировать `.env.example` в `.env` и заполнить:
    ```env
-   DB_USER=your_user
-   DB_PASSWORD=your_password
-   DB_PORT=5432
+   GF_ADMIN_USER=admin
+   GF_ADMIN_PASSWORD=<надёжный пароль>
+   TELEGRAM_BOT_TOKEN=<токен бота>
+   TELEGRAM_CHAT_ID=<chat id>
    ```
-
-2. Убедитесь, что на хосте доступны сертификаты Let's Encrypt в `/etc/letsencrypt` или настройте получение сертификатов через certbot.
-
-3. Запуск стекa:
+2. Убедиться, что на хосте есть сертификаты Let's Encrypt (`/etc/letsencrypt`) — через certbot.
+3. Запуск:
    ```bash
-   docker compose up -d
+   docker compose \
+     -f docker-compose.yaml \
+     -f docker-compose.monitoring-server.yml \
+     -f docker-compose.monitoring-agent.yml \
+     up -d
    ```
-   Или для Docker Swarm:
-   ```bash
-   docker stack deploy -c docker-stack.yml monitoring
-   ```
+4. Доступ:
+   - Grafana: `https://<домен>/grafana/`
+   - Prometheus: `https://<домен>/prometheus/`
 
-4. Доступ к сервисам:
-- Grafana: https://\<ваш_домен\>/grafana/
-- Prometheus: https://\<ваш_домен\>/prometheus/
-- Telemt: конфигурируется в `telemt-config/telemt.toml` (по умолчанию порт 443)
+### Деплой на "главный" сервер (vpn-boriska.ru)
 
-## Ключевые детали конфигурации
-- Nginx
-  - В `nginx_web.conf` настроены редиректы HTTP->HTTPS, ACME маршрут `/.well-known/acme-challenge/` и проксирование для Grafana/Prometheus.
-  - Используются `limit_req_zone` для базовой защиты от массовых запросов.
-  - Для корректной работы проксирования Grafana применён `sub_filter` для переписывания путей.
-- Telemt
-  - `telemt-config/telemt.toml` включает TLS (tls = true) и API (server.api.enabled = true).
-  - В `docker-compose.yaml` telemt запускается с ограничениями безопасности (no-new-privileges, cap_drop, tmpfs) и ulimits.
-- Сетевая привязка
-  - В compose используются host network или привязка IP/портов. Убедитесь, что публичные IP и порты (например, 91.149.219.221 или 94.156.116.218) соответствуют настройкам хоста.
+Настроен через GitHub Actions (`.github/workflows/linters_tests_deploy.yml`): пуш в `develop` — сервер сам подтягивает код, пересобирает `.env` из GitHub Secrets (`GF_ADMIN_USER`, `GF_ADMIN_PASSWORD`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`) и передёргивает compose. Секреты нужно один раз прописать в настройках репозитория на GitHub.
 
-## Рекомендации по безопасности
-- Не храните секреты в репозитории. Используйте `.env`, Docker secrets или менеджер секретов.
-- Ограничьте доступ к административным интерфейсам (Grafana/Prometheus): включите аутентификацию и/или whitelist.
-- Настройте брандмауэр (ufw/iptables):
-  - Разрешить 80 и 443 для внешнего трафика.
-  - Разрешить внутренние порты (например, 9090 для Prometheus) только локально.
-- Установите и настройте fail2ban для защиты от повторных попыток соединений и сканирования.
-- Не запускайте контейнеры от root без необходимости; вместо этого используйте capability NET_BIND_SERVICE.
+### Добавление нового мониторимого сервера
 
-## Переменные окружения (рекомендуемый минимум)
-- DB_USER — пользователь БД
-- DB_PASSWORD — пароль БД
-- DB_PORT — порт БД
-- Другие переменные зависят от конкретных сервисов и образов (проверьте docker-compose.yaml и используемые образы).
+1. Задеплоить на него `docker-compose.monitoring-agent.yml` (cAdvisor + node-exporter + Alloy)
+2. Добавить его адрес в `prometheus.yml` (targets для `cadvisor`/`node-exporter`)
+3. В `alloy-config.alloy` на этом сервере поменять `loki.write` endpoint на публично доступный адрес центрального Loki (сейчас там `http://loki:3100` — резолвится только пока Alloy живёт в одном docker-compose проекте с самим Loki)
 
-Добавьте файл `.env.example` в репозиторий для удобства развёртывания.
+## Мониторинг и алерты
+
+- **Дашборды**: "Node Exporter Full" (состояние хоста), "Docker and system monitoring" (хост + контейнеры), "Logs" (логи через Loki), "Alerts Overview" (активные алерты)
+- **Алерты** уходят в Telegram: недоступность экспортёра, диск >90%, память >90%, swap >50%, перегрузка CPU (нормализована на число ядер), падение числа контейнеров (относительно часа назад — не требует правки при изменении их количества), всплеск ERROR-логов в `api`/`vpn_bot`
+- Настройка правил/каналов — только через файлы в `grafana/provisioning/alerting/`, не через UI
+
+## Безопасность
+
+- Секреты — только через `.env` (гитигнорится) или GitHub Secrets, не в репозитории
+- Порты node-exporter (9100) и cAdvisor (8080) публикуются наружу без аутентификации — нужны для сбора метрик с других серверов, ограничивать доступ файрволом
+- Prometheus/Grafana слушают только `127.0.0.1`, наружу отдаются исключительно через nginx (HTTPS)
+- fail2ban / ufw — рекомендуется настраивать на уровне ОС отдельно (см. `QUICKStart.md`)
 
 ## Полезные команды
-- Просмотр логов:
-  ```bash
-  docker compose logs -f nginx
-  docker compose logs -f telemt
-  ```
-- Останов/запуск:
-  ```bash
-  docker compose down
-  docker compose up -d
-  ```
-- Проверка конфигурации nginx на хосте:
-  ```bash
-  nginx -t -c /etc/nginx/nginx.conf
-  ```
 
-## FAQ — частые проблемы
-- Ошибка привязки к порту 443: если контейнер не может привязать порт <1024, используйте capability NET_BIND_SERVICE или проброс портов через хост.
-- Certbot не может верифицировать домен: проверьте, что DNS указывает на сервер и что nginx отвечает на 80 для ACME-challenge.
-- Grafana некорректно отображается: проверьте `sub_filter` и `proxy_pass` в nginx, а также Base URL в Grafana.
+```bash
+# Логи сервиса
+docker compose -f docker-compose.yaml -f docker-compose.monitoring-server.yml -f docker-compose.monitoring-agent.yml logs -f grafana
 
-## Лицензия
-Добавьте подходящую лицензию (например, MIT) при необходи��ости.
+# Перезапуск всего стека
+docker compose -f docker-compose.yaml -f docker-compose.monitoring-server.yml -f docker-compose.monitoring-agent.yml restart
+
+# Проверка конфига nginx
+docker exec nginx nginx -t
+```
+
+## FAQ
+
+- **Grafana отображается некорректно за прокси** — проверить `sub_filter`/`proxy_pass` в `nginx_web.conf` и `GF_SERVER_ROOT_URL` в compose
+- **Дашборд не подхватил правки из JSON** — файловый provisioning Grafana поллит папку каждые 30 сек, но датасорсы читаются только при старте контейнера — если менялся датасорс, нужен рестарт Grafana
+- **Алерт в Telegram не долетает** — проверить `docker logs grafana | grep -i telegram`, обычно проблема либо в токене/chat_id, либо в форматировании сообщения (используем `parse_mode: HTML`, а не Markdown — он куда терпимее к произвольному тексту в лейблах)
 
 ## Автор
+
 BoriskaGlebov — https://github.com/BoriskaGlebov
-
----
-
-### Что сделано
-- Сформирован README с учётом реальных конфигураций проекта (`docker-compose.yaml`, `nginx_web.conf`, `telemt-config/telemt.toml`).
-- Даны рекомендации по безопасности, переменным окружения и быстрому старту.
-
-1. Обновление системы
-Что делает:
-ставит последние пакеты
-удаляет ненужные зависимости
-чистит кэш
-
-```shell
-
-    sudo apt update --fix-missing && sudo apt upgrade -y
-    sudo apt autoremove -y
-    sudo apt clean
-```
-
-🧹 2. Очистка логов (у тебя была основная проблема)
-Почему:
-/var/log занял ~1.1GB
-это ненормально для маленького сервера
-Очистка:
-```shell
-    sudo journalctl --vacuum-size=50M
-    sudo find /var/log -type f -name "*.log" -exec truncate -s 0 {} \;
-    sudo rm -f /var/log/*.gz /var/log/*.[0-9]
-    Команда для проверки что занимает место
-    df -h
-```
-
-🐳 4. Очистка Docker
-Что делает:
-удаляет неиспользуемые контейнеры/образы
-Смотрим, что там занимает место
-```shell
-    docker system df
-    docker system prune -a --volumes -f
-```
-
-🚨 5. Добавить SWAP (КРИТИЧНО)
-Почему:
-у тебя 2GB RAM
-без swap система может падать
-Команды:
-```shell
-    sudo fallocate -l 2G /swapfile
-    sudo chmod 600 /swapfile
-    sudo mkswap /swapfile
-    sudo swapon /swapfile
-    echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
-
-```
-
-8. Очистка RAM (временно)
-```shell
-    sync && echo 3 | sudo tee /proc/sys/vm/drop_caches
-```
