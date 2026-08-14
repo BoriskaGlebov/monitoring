@@ -161,6 +161,6 @@
   "timepicker": {},
   "timezone": "browser",
   "title": "Logs",
-  "uid": "logs-overview",
+  "uid": "container-logs",
   "version": 1
 }

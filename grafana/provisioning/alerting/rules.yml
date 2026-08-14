@@ -223,7 +223,7 @@ groups:
           severity: warning
         annotations:
           summary: "В контейнере {{ $labels.container }} за 5 минут {{ $values.A }} строк с ERROR"
-          logs_link: "https://vpn-boriska.ru/grafana/d/logs-overview/logs?var-container={{ $labels.container }}&from=now-15m&to=now"
+          logs_link: "https://vpn-boriska.ru/grafana/d/container-logs/logs?var-container={{ $labels.container }}&from=now-15m&to=now"
         data:
           - refId: A
             relativeTimeRange: { from: 300, to: 0 }
