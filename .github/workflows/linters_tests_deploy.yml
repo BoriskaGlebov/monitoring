@@ -78,7 +78,7 @@ jobs:
 #          docker compose -f docker-compose.yaml -f docker-compose.monitoring-server.yml -f docker-compose.monitoring-agent.yml up -d --build
 #          EOF
 
-  develop_boris_guard:
+  monitoring_boris_guard:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/develop'  # Выполняется только для ветки develop.
     steps:
@@ -99,6 +99,7 @@ jobs:
       - name: Deploy to server
         run: |
           ssh ${{ secrets.SERVER_USER_BORIS_GUARD }}@${{ secrets.SERVER_IP_BORIS_GUARD }} << 'EOF'
+          set -e
           cd production/monitoring || exit  # Переход в директорию приложения
           git restore .
           git checkout develop
