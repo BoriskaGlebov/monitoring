@@ -45,7 +45,7 @@ services:
       resources:
         limits:
           cpus: "1"
-          memory: 512M
+          memory: 1024M
 
   loki:
     image: grafana/loki:3.7.6
