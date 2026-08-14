@@ -36,7 +36,49 @@ jobs:
 #          git pull origin main            # Обновление кода из репозитория
 #          EOF
 
-  develop_vpn_boriska:
+# Старый сервер (vpn-boriska.ru), откуда переносится мониторинг.
+# Закомментировано, а не удалено — на случай отката. Использовал отдельный
+# nginx в этом же репозитории (docker-compose.yaml) вместо общего edge-nginx.
+#  develop_vpn_boriska:
+#    runs-on: ubuntu-latest
+#    if: github.ref == 'refs/heads/develop'  # Выполняется только для ветки develop.
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v4  # Клонирование репозитория
+#
+#      - name: Set up SSH key
+#        uses: webfactory/ssh-agent@v0.5.3  # Настройка SSH-ключа
+#        with:
+#          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # Приватный ключ из секретов
+#
+#      - name: Add known hosts
+#        run: echo "${{ secrets.SERVER_IP }} $(ssh-keyscan -H ${{ secrets.SERVER_IP }})" >> ~/.ssh/known_hosts  # Добавление сервера в known_hosts
+#      - name: Test SSH connection
+#        run: |
+#          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "whoami" && echo PRIVET # Проверка подключения
+#
+#      - name: Deploy to server
+#        run: |
+#          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+#          cd production/monitoring || exit  # Переход в директорию приложения
+#          git restore .
+#          git checkout develop
+#          git pull origin develop            # Обновление кода из репозитория
+#
+#          rm -f .env
+#          echo "GF_ADMIN_USER=${{ secrets.GF_ADMIN_USER }}" >> .env
+#          echo "GF_ADMIN_PASSWORD=${{ secrets.GF_ADMIN_PASSWORD }}" >> .env
+#          echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" >> .env
+#          echo "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}" >> .env
+#          echo "NODE_HOSTNAME=vpn-boriska.ru" >> .env
+#          echo "CADVISOR_BIND=127.0.0.1" >> .env
+#          echo "NODE_EXPORTER_BIND=127.0.0.1" >> .env
+#
+#          docker compose -f docker-compose.yaml -f docker-compose.monitoring-server.yml -f docker-compose.monitoring-agent.yml down
+#          docker compose -f docker-compose.yaml -f docker-compose.monitoring-server.yml -f docker-compose.monitoring-agent.yml up -d --build
+#          EOF
+
+  develop_boris_guard:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/develop'  # Выполняется только для ветки develop.
     steps:
@@ -46,17 +88,17 @@ jobs:
       - name: Set up SSH key
         uses: webfactory/ssh-agent@v0.5.3  # Настройка SSH-ключа
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # Приватный ключ из секретов
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_BORIS_GUARD }}  # Приватный ключ из секретов
 
       - name: Add known hosts
-        run: echo "${{ secrets.SERVER_IP }} $(ssh-keyscan -H ${{ secrets.SERVER_IP }})" >> ~/.ssh/known_hosts  # Добавление сервера в known_hosts
+        run: echo "${{ secrets.SERVER_IP_BORIS_GUARD }} $(ssh-keyscan -H ${{ secrets.SERVER_IP_BORIS_GUARD }})" >> ~/.ssh/known_hosts  # Добавление сервера в known_hosts
       - name: Test SSH connection
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "whoami" && echo PRIVET # Проверка подключения
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER_BORIS_GUARD }}@${{ secrets.SERVER_IP_BORIS_GUARD }} "whoami" && echo PRIVET # Проверка подключения
 
       - name: Deploy to server
         run: |
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+          ssh ${{ secrets.SERVER_USER_BORIS_GUARD }}@${{ secrets.SERVER_IP_BORIS_GUARD }} << 'EOF'
           cd production/monitoring || exit  # Переход в директорию приложения
           git restore .
           git checkout develop
@@ -67,10 +109,17 @@ jobs:
           echo "GF_ADMIN_PASSWORD=${{ secrets.GF_ADMIN_PASSWORD }}" >> .env
           echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" >> .env
           echo "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}" >> .env
-          echo "NODE_HOSTNAME=vpn-boriska.ru" >> .env
+          echo "NODE_HOSTNAME=boris-guard.space" >> .env
+          echo "GRAFANA_DOMAIN=grafana.boris-guard.space" >> .env
           echo "CADVISOR_BIND=127.0.0.1" >> .env
           echo "NODE_EXPORTER_BIND=127.0.0.1" >> .env
 
-          docker compose -f docker-compose.yaml -f docker-compose.monitoring-server.yml -f docker-compose.monitoring-agent.yml down
-          docker compose -f docker-compose.yaml -f docker-compose.monitoring-server.yml -f docker-compose.monitoring-agent.yml up -d --build
+          # nginx здесь не свой — общий edge-nginx из boriska_guard_infra (roles/nginx_edge),
+          # поэтому без docker-compose.yaml, только сервер и агент мониторинга.
+          docker compose -f docker-compose.monitoring-server.yml -f docker-compose.monitoring-agent.yml down
+          docker compose -f docker-compose.monitoring-server.yml -f docker-compose.monitoring-agent.yml up -d --build
+
+          # Положить свой конфиг в общий edge-nginx и перечитать его конфиг
+          cp nginx/grafana.conf /opt/nginx-edge/conf.d/grafana.conf
+          docker exec nginx_edge nginx -s reload
           EOF
