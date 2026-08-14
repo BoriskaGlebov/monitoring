@@ -8,7 +8,7 @@ services:
     security_opt:
       - apparmor=unconfined
     ports:
-      - "8080:8080"
+      - "${CADVISOR_BIND:-127.0.0.1}:8080:8080"
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:rw
@@ -25,7 +25,7 @@ services:
   node-exporter:
     image: prom/node-exporter:v1.12.1
     container_name: node-exporter
-    hostname: vpn-boriska.ru
+    hostname: ${NODE_HOSTNAME:?укажи NODE_HOSTNAME в .env - имя этого сервера}
     restart: unless-stopped
     command:
       - '--path.procfs=/host/proc'
@@ -36,7 +36,7 @@ services:
       - /sys:/host/sys:ro
       - /:/host:ro,rslave
     ports:
-      - "9100:9100"
+      - "${NODE_EXPORTER_BIND:-127.0.0.1}:9100:9100"
     deploy:
       resources:
         limits:

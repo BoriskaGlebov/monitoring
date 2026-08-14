@@ -67,6 +67,9 @@ jobs:
           echo "GF_ADMIN_PASSWORD=${{ secrets.GF_ADMIN_PASSWORD }}" >> .env
           echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" >> .env
           echo "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}" >> .env
+          echo "NODE_HOSTNAME=vpn-boriska.ru" >> .env
+          echo "CADVISOR_BIND=127.0.0.1" >> .env
+          echo "NODE_EXPORTER_BIND=127.0.0.1" >> .env
 
           docker compose -f docker-compose.yaml -f docker-compose.monitoring-server.yml -f docker-compose.monitoring-agent.yml down
           docker compose -f docker-compose.yaml -f docker-compose.monitoring-server.yml -f docker-compose.monitoring-agent.yml up -d --build
