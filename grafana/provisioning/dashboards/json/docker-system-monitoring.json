@@ -684,7 +684,7 @@
             }
           },
           "thresholds": {
-            "mode": "percentage",
+            "mode": "absolute",
             "steps": [
               {
                 "color": "green",
@@ -700,7 +700,7 @@
               }
             ]
           },
-          "unit": "none"
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -727,8 +727,8 @@
         {
           "refId": "A",
           "datasource": null,
-          "expr": "node_load1{instance=~\"$server:.*\"} / scalar(count(count(node_cpu_seconds_total{instance=~\"$server:.*\"}) by (cpu)))",
-          "legendFormat": "load / cores"
+          "expr": "node_load1{instance=~\"$server:.*\"} / scalar(count(count(node_cpu_seconds_total{instance=~\"$server:.*\"}) by (cpu))) * 100",
+          "legendFormat": "load % of cores"
         }
       ],
       "transformations": [],
