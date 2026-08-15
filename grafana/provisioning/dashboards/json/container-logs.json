@@ -304,10 +304,7 @@
           "uid": "loki"
         },
         "definition": "label_values(server)",
-        "query": {
-          "refId": "server-variable",
-          "label": "server"
-        },
+        "query": "label_values(server)",
         "current": {
           "text": ".+",
           "value": ".+"
@@ -331,10 +328,7 @@
           "uid": "loki"
         },
         "definition": "label_values({server=~\"$server\"}, container)",
-        "query": {
-          "refId": "container-variable",
-          "label": "container"
-        },
+        "query": "label_values({server=~\"$server\"}, container)",
         "current": {
           "text": ".+",
           "value": ".+"
