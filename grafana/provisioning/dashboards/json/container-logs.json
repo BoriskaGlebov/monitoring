@@ -330,7 +330,7 @@
           "type": "loki",
           "uid": "loki"
         },
-        "definition": "label_values(container)",
+        "definition": "label_values({server=~\"$server\"}, container)",
         "query": {
           "refId": "container-variable",
           "label": "container"
