@@ -11,7 +11,7 @@ groups:
         title: "Экспортёр недоступен"
         condition: B
         for: 2m
-        noDataState: NoData
+        noDataState: OK
         execErrState: Alerting
         labels:
           severity: critical
