@@ -1,5 +1,13 @@
 apiVersion: 1
 
+# Файловый провижининг алертов сам не удаляет правила, пропавшие из groups —
+# нужно явно перечислить старые uid на удаление.
+deleteRules:
+  - orgId: 1
+    uid: cpu-overload-vpn-boriska
+  - orgId: 1
+    uid: cpu-overload-others
+
 groups:
   - orgId: 1
     name: infra-alerts
