@@ -5,6 +5,15 @@ discovery.docker "containers" {
 discovery.relabel "containers" {
   targets = discovery.docker.containers.targets
 
+  // amnezia-* контейнеры подняты с logging driver "none" (осознанно, логи VPN-подключений
+  // нигде не хранятся) — Alloy не может их прочитать в принципе, оставлять в целях
+  // не имеет смысла, только шлёт одну и ту же ошибку каждые 5 секунд.
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "/(amnezia.*)"
+    action        = "drop"
+  }
+
   rule {
     source_labels = ["__meta_docker_container_name"]
     regex         = "/(.*)"
