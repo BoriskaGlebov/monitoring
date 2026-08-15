@@ -58,6 +58,9 @@ services:
       - ./loki-config.yml:/etc/loki/local-config.yaml
     command:
       - '-config.file=/etc/loki/local-config.yaml'
+    networks:
+      - default
+      - edge_net
     deploy:
       resources:
         limits:

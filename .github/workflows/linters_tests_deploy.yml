@@ -122,5 +122,9 @@ jobs:
 
           # Положить свой конфиг в общий edge-nginx и перечитать его конфиг
           cp nginx/grafana.conf /opt/nginx-edge/conf.d/grafana.conf
+
+          # htpasswd для /loki/push — генерируем заново при каждом деплое, файл в git не попадает
+          echo "${{ secrets.LOKI_PUSH_USER }}:$(openssl passwd -apr1 '${{ secrets.LOKI_PUSH_PASSWORD }}')" > /opt/nginx-edge/conf.d/loki.htpasswd
+
           docker exec nginx_edge nginx -s reload
           EOF
