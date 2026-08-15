@@ -1338,6 +1338,37 @@
       "links": []
     },
     {
+      "id": 100,
+      "title": "Активные и ожидающие алерты",
+      "description": "Все алерты, которые сейчас в состоянии firing или pending, по всем серверам",
+      "type": "alertlist",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 11
+      },
+      "options": {
+        "alertInstanceLabelFilter": "",
+        "alertName": "",
+        "dashboardAlerts": false,
+        "groupBy": [
+          "alertname"
+        ],
+        "groupMode": "default",
+        "maxItems": 50,
+        "sortOrder": 1,
+        "stateFilter": {
+          "error": true,
+          "firing": true,
+          "noData": false,
+          "normal": false,
+          "pending": true
+        },
+        "viewMode": "list"
+      }
+    },
+    {
       "id": 1,
       "title": "CPU Usage per Container",
       "description": "Загрузка CPU каждым Docker-контейнером отдельно",
@@ -1350,7 +1381,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 11
+        "y": 19
       },
       "fieldConfig": {
         "defaults": {
@@ -1459,7 +1490,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 19
+        "y": 27
       },
       "fieldConfig": {
         "defaults": {
@@ -1575,7 +1606,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 27
+        "y": 35
       },
       "fieldConfig": {
         "defaults": {
@@ -1688,7 +1719,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 27
+        "y": 35
       },
       "fieldConfig": {
         "defaults": {
@@ -1801,7 +1832,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 34
+        "y": 42
       },
       "fieldConfig": {
         "defaults": {
@@ -1867,7 +1898,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 34
+        "y": 42
       },
       "fieldConfig": {
         "defaults": {
@@ -1980,7 +2011,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 41
+        "y": 49
       },
       "fieldConfig": {
         "defaults": {
@@ -2054,7 +2085,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 41
+        "y": 49
       },
       "fieldConfig": {
         "defaults": {
