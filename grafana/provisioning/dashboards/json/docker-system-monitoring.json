@@ -1688,7 +1688,7 @@
         {
           "refId": "A",
           "datasource": null,
-          "expr": "sum(rate(container_network_receive_bytes_total{name=~\".+\"}[$interval])) by (name)",
+          "expr": "sum(rate(container_network_receive_bytes_total{name=~\".+\", name!~\"cadvisor|node-exporter\"}[$interval])) by (name)",
           "legendFormat": "{{name}}",
           "intervalFactor": 2,
           "step": 240
@@ -1800,7 +1800,7 @@
         {
           "refId": "A",
           "datasource": null,
-          "expr": "sum(rate(container_network_transmit_bytes_total{name=~\".+\"}[$interval])) by (name)",
+          "expr": "sum(rate(container_network_transmit_bytes_total{name=~\".+\", name!~\"cadvisor|node-exporter\"}[$interval])) by (name)",
           "legendFormat": "{{name}}",
           "intervalFactor": 2,
           "step": 240
