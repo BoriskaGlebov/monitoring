@@ -148,7 +148,7 @@
         {
           "refId": "A",
           "datasource": null,
-          "expr": "count(rate(container_last_seen{name=~\".+\"}[$interval]))",
+          "expr": "count(rate(container_last_seen{name=~\".+\", instance=~\"$server:.*\"}[$interval]))",
           "intervalFactor": 2,
           "step": 1800
         }
@@ -608,7 +608,7 @@
         {
           "refId": "A",
           "datasource": null,
-          "expr": "sum(rate(container_network_receive_bytes_total{id=\"/\"}[$interval])) by (id) * 8",
+          "expr": "sum(rate(container_network_receive_bytes_total{id=\"/\", instance=~\"$server:.*\"}[$interval])) by (id) * 8",
           "legendFormat": "RECEIVED",
           "intervalFactor": 2,
           "step": 600
@@ -616,7 +616,7 @@
         {
           "refId": "B",
           "datasource": null,
-          "expr": "- sum(rate(container_network_transmit_bytes_total{id=\"/\"}[$interval])) by (id) * 8",
+          "expr": "- sum(rate(container_network_transmit_bytes_total{id=\"/\", instance=~\"$server:.*\"}[$interval])) by (id) * 8",
           "legendFormat": "SENT",
           "intervalFactor": 2,
           "step": 600
@@ -1316,7 +1316,7 @@
         {
           "refId": "A",
           "datasource": null,
-          "expr": "-sum(rate(node_disk_read_bytes_total[$interval])) by (device)",
+          "expr": "-sum(rate(node_disk_read_bytes_total{instance=~\"$server:.*\"}[$interval])) by (device)",
           "legendFormat": "OUT on /{{device}}",
           "interval": "",
           "intervalFactor": 2,
@@ -1326,7 +1326,7 @@
         {
           "refId": "B",
           "datasource": null,
-          "expr": "sum(rate(node_disk_written_bytes_total[$interval])) by (device)",
+          "expr": "sum(rate(node_disk_written_bytes_total{instance=~\"$server:.*\"}[$interval])) by (device)",
           "legendFormat": "IN on /{{device}}",
           "interval": "",
           "intervalFactor": 2,
@@ -1466,7 +1466,7 @@
         {
           "refId": "F",
           "datasource": null,
-          "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\".+\"}[$interval])) by (name) * 100",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\".+\", instance=~\"$server:.*\"}[$interval])) by (name) * 100",
           "legendFormat": "{{name}}",
           "interval": "",
           "intervalFactor": 2,
@@ -1575,7 +1575,7 @@
         {
           "refId": "A",
           "datasource": null,
-          "expr": "sum(container_memory_rss{name=~\".+\"}) by (name)",
+          "expr": "sum(container_memory_rss{name=~\".+\", instance=~\"$server:.*\"}) by (name)",
           "legendFormat": "{{name}}",
           "intervalFactor": 2,
           "step": 240
@@ -1583,7 +1583,7 @@
         {
           "refId": "B",
           "datasource": null,
-          "expr": "container_memory_usage_bytes{name=~\".+\"}",
+          "expr": "container_memory_usage_bytes{name=~\".+\", instance=~\"$server:.*\"}",
           "legendFormat": "{{name}}",
           "intervalFactor": 2,
           "step": 240,
@@ -1691,7 +1691,7 @@
         {
           "refId": "A",
           "datasource": null,
-          "expr": "sum(rate(container_network_receive_bytes_total{name=~\".+\", name!~\"cadvisor|node-exporter\"}[$interval])) by (name) * 8",
+          "expr": "sum(rate(container_network_receive_bytes_total{name=~\".+\", instance=~\"$server:.*\", name!~\"cadvisor|node-exporter\"}[$interval])) by (name) * 8",
           "legendFormat": "{{name}}",
           "intervalFactor": 2,
           "step": 240
@@ -1699,7 +1699,7 @@
         {
           "refId": "B",
           "datasource": null,
-          "expr": "sum(rate(container_network_receive_bytes_total{id=\"/\"}[$interval])) * 8",
+          "expr": "sum(rate(container_network_receive_bytes_total{id=\"/\", instance=~\"$server:.*\"}[$interval])) * 8",
           "legendFormat": "TOTAL",
           "intervalFactor": 2,
           "step": 10
@@ -1806,7 +1806,7 @@
         {
           "refId": "A",
           "datasource": null,
-          "expr": "sum(rate(container_network_transmit_bytes_total{name=~\".+\", name!~\"cadvisor|node-exporter\"}[$interval])) by (name) * 8",
+          "expr": "sum(rate(container_network_transmit_bytes_total{name=~\".+\", instance=~\"$server:.*\", name!~\"cadvisor|node-exporter\"}[$interval])) by (name) * 8",
           "legendFormat": "{{name}}",
           "intervalFactor": 2,
           "step": 240
@@ -1814,7 +1814,7 @@
         {
           "refId": "B",
           "datasource": null,
-          "expr": "rate(container_network_transmit_bytes_total{id=\"/\"}[$interval]) * 8",
+          "expr": "rate(container_network_transmit_bytes_total{id=\"/\", instance=~\"$server:.*\"}[$interval]) * 8",
           "legendFormat": "TOTAL",
           "intervalFactor": 2,
           "step": 10
@@ -1871,7 +1871,7 @@
         {
           "refId": "A",
           "datasource": null,
-          "expr": "container_memory_usage_bytes{name=~\".+\"}",
+          "expr": "container_memory_usage_bytes{name=~\".+\", instance=~\"$server:.*\"}",
           "legendFormat": "{{name}}",
           "instant": true
         }
@@ -1984,7 +1984,7 @@
         {
           "refId": "A",
           "datasource": null,
-          "expr": "sum(container_memory_swap{name=~\".+\"}) by (name)",
+          "expr": "sum(container_memory_swap{name=~\".+\", instance=~\"$server:.*\"}) by (name)",
           "legendFormat": "{{name}}",
           "intervalFactor": 2,
           "step": 240
@@ -1992,7 +1992,7 @@
         {
           "refId": "B",
           "datasource": null,
-          "expr": "container_memory_usage_bytes{name=~\".+\"}",
+          "expr": "container_memory_usage_bytes{name=~\".+\", instance=~\"$server:.*\"}",
           "legendFormat": "{{name}}",
           "intervalFactor": 2,
           "step": 240,
@@ -2060,7 +2060,7 @@
           "datasource": null,
           "instant": true,
           "legendFormat": "{{name}}",
-          "expr": "(container_memory_usage_bytes{name=~\".+\"} / container_spec_memory_limit_bytes{name=~\".+\"} * 100)\nand (container_spec_memory_limit_bytes{name=~\".+\"} > 0)\nand (container_spec_memory_limit_bytes{name=~\".+\"} < 1e18)"
+          "expr": "(container_memory_usage_bytes{name=~\".+\", instance=~\"$server:.*\"} / container_spec_memory_limit_bytes{name=~\".+\", instance=~\"$server:.*\"} * 100)\nand (container_spec_memory_limit_bytes{name=~\".+\", instance=~\"$server:.*\"} > 0)\nand (container_spec_memory_limit_bytes{name=~\".+\", instance=~\"$server:.*\"} < 1e18)"
         }
       ],
       "transformations": [
@@ -2124,7 +2124,7 @@
         {
           "refId": "A",
           "datasource": null,
-          "expr": "container_spec_memory_limit_bytes{name=~\".+\"}",
+          "expr": "container_spec_memory_limit_bytes{name=~\".+\", instance=~\"$server:.*\"}",
           "legendFormat": "{{name}}",
           "instant": true
         }
