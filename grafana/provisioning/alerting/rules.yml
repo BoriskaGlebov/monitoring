@@ -192,6 +192,68 @@ groups:
                 - evaluator: { type: gt, params: [-1] }
               refId: B
 
+      - uid: traffic-in-drop
+        title: "Входящий трафик резко упал"
+        condition: B
+        for: 5m
+        noDataState: OK
+        execErrState: Alerting
+        labels:
+          severity: critical
+        annotations:
+          summary: "Входящий трафик на {{ $labels.instance }} упал более чем на 70% по сравнению с этим же временем сутки назад — возможна блокировка (РКН), нужна срочная проверка доступности"
+        data:
+          - refId: A
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: prometheus
+            model:
+              expr: >
+                sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[5m]))
+                /
+                sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[5m] offset 1d))
+              instant: true
+              refId: A
+          - refId: B
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: "__expr__"
+            model:
+              type: threshold
+              expression: A
+              conditions:
+                - evaluator: { type: lt, params: [0.3] }
+              refId: B
+
+      - uid: traffic-out-drop
+        title: "Исходящий трафик резко упал"
+        condition: B
+        for: 5m
+        noDataState: OK
+        execErrState: Alerting
+        labels:
+          severity: critical
+        annotations:
+          summary: "Исходящий трафик на {{ $labels.instance }} упал более чем на 70% по сравнению с этим же временем сутки назад — возможна блокировка (РКН), нужна срочная проверка доступности"
+        data:
+          - refId: A
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: prometheus
+            model:
+              expr: >
+                sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[5m]))
+                /
+                sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[5m] offset 1d))
+              instant: true
+              refId: A
+          - refId: B
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: "__expr__"
+            model:
+              type: threshold
+              expression: A
+              conditions:
+                - evaluator: { type: lt, params: [0.3] }
+              refId: B
+
       - uid: app-error-spike
         title: "Много ошибок в логах (api/vpn_bot)"
         condition: B
