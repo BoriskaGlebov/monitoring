@@ -201,20 +201,26 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: "Входящий трафик на {{ $labels.instance }} упал более чем на 90% по сравнению с этим же временем сутки назад — возможна блокировка (РКН), нужна срочная проверка доступности"
+          summary: "Входящий трафик на {{ $labels.instance }}: сейчас {{ printf \"%.2f\" $values.C.Value }} Мбит/с, сутки назад в это же время {{ printf \"%.2f\" $values.D.Value }} Мбит/с (осталось {{ humanizePercentage $values.A.Value }}) — возможна блокировка (РКН), нужна срочная проверка доступности"
         data:
+          # Отношение текущего трафика (15m) к среднему за час сутки назад.
+          # Только для хостов, где сутки назад было > 1 Мбит/с (125000 байт/с), чтобы не шуметь на ночном/фоновом трафике.
           - refId: A
-            relativeTimeRange: { from: 300, to: 0 }
+            relativeTimeRange: { from: 900, to: 0 }
             datasourceUid: prometheus
             model:
               expr: >
-                sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[5m]))
-                /
-                sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[5m] offset 1d))
+                (
+                  sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[15m]))
+                  /
+                  sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 1d))
+                )
+                and on (instance)
+                sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 1d)) > 125000
               instant: true
               refId: A
           - refId: B
-            relativeTimeRange: { from: 300, to: 0 }
+            relativeTimeRange: { from: 900, to: 0 }
             datasourceUid: "__expr__"
             model:
               type: threshold
@@ -222,6 +228,23 @@ groups:
               conditions:
                 - evaluator: { type: lt, params: [0.1] }
               refId: B
+          # C и D — только для текста уведомления, в Мбит/с
+          - refId: C
+            relativeTimeRange: { from: 900, to: 0 }
+            datasourceUid: prometheus
+            model:
+              expr: >
+                sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[15m])) * 8 / 1e6
+              instant: true
+              refId: C
+          - refId: D
+            relativeTimeRange: { from: 900, to: 0 }
+            datasourceUid: prometheus
+            model:
+              expr: >
+                sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 1d)) * 8 / 1e6
+              instant: true
+              refId: D
 
       - uid: traffic-out-drop
         title: "Исходящий трафик резко упал"
@@ -232,20 +255,26 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: "Исходящий трафик на {{ $labels.instance }} упал более чем на 90% по сравнению с этим же временем сутки назад — возможна блокировка (РКН), нужна срочная проверка доступности"
+          summary: "Исходящий трафик на {{ $labels.instance }}: сейчас {{ printf \"%.2f\" $values.C.Value }} Мбит/с, сутки назад в это же время {{ printf \"%.2f\" $values.D.Value }} Мбит/с (осталось {{ humanizePercentage $values.A.Value }}) — возможна блокировка (РКН), нужна срочная проверка доступности"
         data:
+          # Отношение текущего трафика (15m) к среднему за час сутки назад.
+          # Только для хостов, где сутки назад было > 1 Мбит/с (125000 байт/с), чтобы не шуметь на ночном/фоновом трафике.
           - refId: A
-            relativeTimeRange: { from: 300, to: 0 }
+            relativeTimeRange: { from: 900, to: 0 }
             datasourceUid: prometheus
             model:
               expr: >
-                sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[5m]))
-                /
-                sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[5m] offset 1d))
+                (
+                  sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[15m]))
+                  /
+                  sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 1d))
+                )
+                and on (instance)
+                sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 1d)) > 125000
               instant: true
               refId: A
           - refId: B
-            relativeTimeRange: { from: 300, to: 0 }
+            relativeTimeRange: { from: 900, to: 0 }
             datasourceUid: "__expr__"
             model:
               type: threshold
@@ -253,6 +282,23 @@ groups:
               conditions:
                 - evaluator: { type: lt, params: [0.1] }
               refId: B
+          # C и D — только для текста уведомления, в Мбит/с
+          - refId: C
+            relativeTimeRange: { from: 900, to: 0 }
+            datasourceUid: prometheus
+            model:
+              expr: >
+                sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[15m])) * 8 / 1e6
+              instant: true
+              refId: C
+          - refId: D
+            relativeTimeRange: { from: 900, to: 0 }
+            datasourceUid: prometheus
+            model:
+              expr: >
+                sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 1d)) * 8 / 1e6
+              instant: true
+              refId: D
 
       - uid: app-error-spike
         title: "Много ошибок в логах (api/vpn_bot)"
