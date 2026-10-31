@@ -201,10 +201,11 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: "Входящий трафик на {{ $labels.instance }}: сейчас {{ printf \"%.2f\" $values.C.Value }} Мбит/с, сутки назад в это же время {{ printf \"%.2f\" $values.D.Value }} Мбит/с (осталось {{ humanizePercentage $values.A.Value }}) — возможна блокировка (РКН), нужна срочная проверка доступности"
+          summary: "Входящий трафик на {{ $labels.instance }}: сейчас {{ printf \"%.2f\" $values.C.Value }} Мбит/с, в среднем за последние 3 дня в это же время {{ printf \"%.2f\" $values.D.Value }} Мбит/с (осталось {{ humanizePercentage $values.A.Value }}) — возможна блокировка (РКН), нужна срочная проверка доступности"
         data:
-          # Отношение текущего трафика (5m) к среднему за час сутки назад.
-          # Только для хостов, где сутки назад было > 1 Мбит/с (125000 байт/с), чтобы не шуметь на ночном/фоновом трафике.
+          # Отношение текущего трафика (5m) к среднему за тот же час за последние 3 дня
+          # (вместо одной точки "сутки назад" — устойчивее к разовым скачкам трафика).
+          # Только для хостов, где базовая линия > 1 Мбит/с (125000 байт/с), чтобы не шуметь на ночном/фоновом трафике.
           - refId: A
             relativeTimeRange: { from: 300, to: 0 }
             datasourceUid: prometheus
@@ -213,10 +214,26 @@ groups:
                 (
                   sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[5m]))
                   /
-                  sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 1d))
+                  (
+                    (
+                      sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 1d))
+                      +
+                      sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 2d))
+                      +
+                      sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 3d))
+                    ) / 3
+                  )
                 )
                 and on (instance)
-                sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 1d)) > 125000
+                (
+                  (
+                    sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 1d))
+                    +
+                    sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 2d))
+                    +
+                    sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 3d))
+                  ) / 3
+                ) > 125000
               instant: true
               refId: A
           - refId: B
@@ -226,7 +243,7 @@ groups:
               type: threshold
               expression: A
               conditions:
-                - evaluator: { type: lt, params: [0.3] }
+                - evaluator: { type: lt, params: [0.2] }
               refId: B
           # C и D — только для текста уведомления, в Мбит/с
           - refId: C
@@ -242,7 +259,15 @@ groups:
             datasourceUid: prometheus
             model:
               expr: >
-                sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 1d)) * 8 / 1e6
+                (
+                  (
+                    sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 1d))
+                    +
+                    sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 2d))
+                    +
+                    sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 3d))
+                  ) / 3
+                ) * 8 / 1e6
               instant: true
               refId: D
 
@@ -255,10 +280,11 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: "Исходящий трафик на {{ $labels.instance }}: сейчас {{ printf \"%.2f\" $values.C.Value }} Мбит/с, сутки назад в это же время {{ printf \"%.2f\" $values.D.Value }} Мбит/с (осталось {{ humanizePercentage $values.A.Value }}) — возможна блокировка (РКН), нужна срочная проверка доступности"
+          summary: "Исходящий трафик на {{ $labels.instance }}: сейчас {{ printf \"%.2f\" $values.C.Value }} Мбит/с, в среднем за последние 3 дня в это же время {{ printf \"%.2f\" $values.D.Value }} Мбит/с (осталось {{ humanizePercentage $values.A.Value }}) — возможна блокировка (РКН), нужна срочная проверка доступности"
         data:
-          # Отношение текущего трафика (5m) к среднему за час сутки назад.
-          # Только для хостов, где сутки назад было > 1 Мбит/с (125000 байт/с), чтобы не шуметь на ночном/фоновом трафике.
+          # Отношение текущего трафика (5m) к среднему за тот же час за последние 3 дня
+          # (вместо одной точки "сутки назад" — устойчивее к разовым скачкам трафика).
+          # Только для хостов, где базовая линия > 1 Мбит/с (125000 байт/с), чтобы не шуметь на ночном/фоновом трафике.
           - refId: A
             relativeTimeRange: { from: 300, to: 0 }
             datasourceUid: prometheus
@@ -267,10 +293,26 @@ groups:
                 (
                   sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[5m]))
                   /
-                  sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 1d))
+                  (
+                    (
+                      sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 1d))
+                      +
+                      sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 2d))
+                      +
+                      sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 3d))
+                    ) / 3
+                  )
                 )
                 and on (instance)
-                sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 1d)) > 125000
+                (
+                  (
+                    sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 1d))
+                    +
+                    sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 2d))
+                    +
+                    sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 3d))
+                  ) / 3
+                ) > 125000
               instant: true
               refId: A
           - refId: B
@@ -280,7 +322,7 @@ groups:
               type: threshold
               expression: A
               conditions:
-                - evaluator: { type: lt, params: [0.3] }
+                - evaluator: { type: lt, params: [0.2] }
               refId: B
           # C и D — только для текста уведомления, в Мбит/с
           - refId: C
@@ -296,7 +338,15 @@ groups:
             datasourceUid: prometheus
             model:
               expr: >
-                sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 1d)) * 8 / 1e6
+                (
+                  (
+                    sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 1d))
+                    +
+                    sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 2d))
+                    +
+                    sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 3d))
+                  ) / 3
+                ) * 8 / 1e6
               instant: true
               refId: D
 
@@ -309,7 +359,7 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: "В контейнере {{ $labels.container }} за 5 минут {{ $values.A }} строк с ERROR"
+          summary: "В контейнере {{ $labels.container }} за 5 минут {{ $values.A.Value }} строк с ERROR"
           logs_link: "https://grafana.boris-guard.space/grafana/d/container-logs/logs?var-container={{ $labels.container }}&from=now-15m&to=now"
         data:
           - refId: A
