@@ -7,6 +7,10 @@ deleteRules:
     uid: cpu-overload-vpn-boriska
   - orgId: 1
     uid: cpu-overload-others
+  - orgId: 1
+    uid: traffic-in-drop
+  - orgId: 1
+    uid: traffic-out-drop
 
 groups:
   - orgId: 1
@@ -192,39 +196,26 @@ groups:
                 - evaluator: { type: gt, params: [-1] }
               refId: B
 
-      - uid: traffic-in-drop
-        title: "Входящий трафик резко упал"
-        condition: B
+      - uid: traffic-drop
+        title: "Трафик резко упал"
+        condition: T
         for: 3m
         noDataState: OK
         execErrState: Alerting
         labels:
           severity: critical
         annotations:
-          summary: "Входящий трафик на {{ $labels.instance }}: сейчас {{ printf \"%.2f\" $values.C.Value }} Мбит/с, в среднем за последние 3 дня в это же время {{ printf \"%.2f\" $values.D.Value }} Мбит/с (осталось {{ humanizePercentage $values.A.Value }}) — возможна блокировка (РКН), нужна срочная проверка доступности"
+          summary: "Трафик на {{ $labels.instance }}: входящий сейчас {{ printf \"%.2f\" $values.CI.Value }} Мбит/с (норма {{ printf \"%.2f\" $values.DI.Value }} Мбит/с, осталось {{ humanizePercentage $values.RI.Value }}), исходящий сейчас {{ printf \"%.2f\" $values.CO.Value }} Мбит/с (норма {{ printf \"%.2f\" $values.DO.Value }} Мбит/с, осталось {{ humanizePercentage $values.RO.Value }}) — возможна блокировка (РКН), нужна срочная проверка доступности"
         data:
-          # Отношение текущего трафика (5m) к среднему за тот же час за последние 3 дня
+          # RI/RO — отношение текущего трафика (5m) к среднему за тот же час за последние 3 дня
           # (вместо одной точки "сутки назад" — устойчивее к разовым скачкам трафика).
-          # Только для хостов, где базовая линия > 1 Мбит/с (125000 байт/с), чтобы не шуметь на ночном/фоновом трафике.
-          - refId: A
+          - refId: RI
             relativeTimeRange: { from: 300, to: 0 }
             datasourceUid: prometheus
             model:
               expr: >
-                (
-                  sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[5m]))
-                  /
-                  (
-                    (
-                      sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 1d))
-                      +
-                      sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 2d))
-                      +
-                      sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 3d))
-                    ) / 3
-                  )
-                )
-                and on (instance)
+                sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[5m]))
+                /
                 (
                   (
                     sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 1d))
@@ -233,28 +224,67 @@ groups:
                     +
                     sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 3d))
                   ) / 3
-                ) > 125000
+                )
               instant: true
-              refId: A
-          - refId: B
+              refId: RI
+          # FI/FO — базовая линия (3-дневное среднее) в байт/с, нужна только для порога "> 1 Мбит/с",
+          # чтобы не шуметь на ночном/фоновом трафике.
+          - refId: FI
             relativeTimeRange: { from: 300, to: 0 }
-            datasourceUid: "__expr__"
+            datasourceUid: prometheus
             model:
-              type: threshold
-              expression: A
-              conditions:
-                - evaluator: { type: lt, params: [0.2] }
-              refId: B
-          # C и D — только для текста уведомления, в Мбит/с
-          - refId: C
+              expr: >
+                (
+                  sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 1d))
+                  +
+                  sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 2d))
+                  +
+                  sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 3d))
+                ) / 3
+              instant: true
+              refId: FI
+          - refId: RO
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: prometheus
+            model:
+              expr: >
+                sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[5m]))
+                /
+                (
+                  (
+                    sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 1d))
+                    +
+                    sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 2d))
+                    +
+                    sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 3d))
+                  ) / 3
+                )
+              instant: true
+              refId: RO
+          - refId: FO
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: prometheus
+            model:
+              expr: >
+                (
+                  sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 1d))
+                  +
+                  sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 2d))
+                  +
+                  sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 3d))
+                ) / 3
+              instant: true
+              refId: FO
+          # CI/CO и DI/DO — только для текста уведомления, в Мбит/с
+          - refId: CI
             relativeTimeRange: { from: 300, to: 0 }
             datasourceUid: prometheus
             model:
               expr: >
                 sum by (instance) (rate(node_network_receive_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[5m])) * 8 / 1e6
               instant: true
-              refId: C
-          - refId: D
+              refId: CI
+          - refId: DI
             relativeTimeRange: { from: 300, to: 0 }
             datasourceUid: prometheus
             model:
@@ -269,71 +299,16 @@ groups:
                   ) / 3
                 ) * 8 / 1e6
               instant: true
-              refId: D
-
-      - uid: traffic-out-drop
-        title: "Исходящий трафик резко упал"
-        condition: B
-        for: 3m
-        noDataState: OK
-        execErrState: Alerting
-        labels:
-          severity: critical
-        annotations:
-          summary: "Исходящий трафик на {{ $labels.instance }}: сейчас {{ printf \"%.2f\" $values.C.Value }} Мбит/с, в среднем за последние 3 дня в это же время {{ printf \"%.2f\" $values.D.Value }} Мбит/с (осталось {{ humanizePercentage $values.A.Value }}) — возможна блокировка (РКН), нужна срочная проверка доступности"
-        data:
-          # Отношение текущего трафика (5m) к среднему за тот же час за последние 3 дня
-          # (вместо одной точки "сутки назад" — устойчивее к разовым скачкам трафика).
-          # Только для хостов, где базовая линия > 1 Мбит/с (125000 байт/с), чтобы не шуметь на ночном/фоновом трафике.
-          - refId: A
-            relativeTimeRange: { from: 300, to: 0 }
-            datasourceUid: prometheus
-            model:
-              expr: >
-                (
-                  sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[5m]))
-                  /
-                  (
-                    (
-                      sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 1d))
-                      +
-                      sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 2d))
-                      +
-                      sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 3d))
-                    ) / 3
-                  )
-                )
-                and on (instance)
-                (
-                  (
-                    sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 1d))
-                    +
-                    sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 2d))
-                    +
-                    sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[1h] offset 3d))
-                  ) / 3
-                ) > 125000
-              instant: true
-              refId: A
-          - refId: B
-            relativeTimeRange: { from: 300, to: 0 }
-            datasourceUid: "__expr__"
-            model:
-              type: threshold
-              expression: A
-              conditions:
-                - evaluator: { type: lt, params: [0.2] }
-              refId: B
-          # C и D — только для текста уведомления, в Мбит/с
-          - refId: C
+              refId: DI
+          - refId: CO
             relativeTimeRange: { from: 300, to: 0 }
             datasourceUid: prometheus
             model:
               expr: >
                 sum by (instance) (rate(node_network_transmit_bytes_total{device!~"lo|docker.*|veth.*|br-.*"}[5m])) * 8 / 1e6
               instant: true
-              refId: C
-          - refId: D
+              refId: CO
+          - refId: DO
             relativeTimeRange: { from: 300, to: 0 }
             datasourceUid: prometheus
             model:
@@ -348,7 +323,24 @@ groups:
                   ) / 3
                 ) * 8 / 1e6
               instant: true
-              refId: D
+              refId: DO
+          # M — срабатывает, если упал вход ИЛИ выход (каждый — только если его трёхдневная база > 1 Мбит/с)
+          - refId: M
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: "__expr__"
+            model:
+              type: math
+              expression: "($RI < 0.2 && $FI > 125000) || ($RO < 0.2 && $FO > 125000)"
+              refId: M
+          - refId: T
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: "__expr__"
+            model:
+              type: threshold
+              expression: M
+              conditions:
+                - evaluator: { type: gt, params: [0] }
+              refId: T
 
       - uid: app-error-spike
         title: "Много ошибок в логах (api/vpn_bot)"

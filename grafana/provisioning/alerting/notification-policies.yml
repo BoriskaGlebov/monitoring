@@ -7,3 +7,13 @@ policies:
     group_wait: 30s
     group_interval: 5m
     repeat_interval: 5m
+    routes:
+      # Алерт про падение трафика шумит сильнее остальных (хосты могут держать
+      # аномалию часами) — повторяем напоминание раз в 30m, а не раз в 5m.
+      - receiver: telegram
+        object_matchers:
+          - ['alertname', '=', 'Трафик резко упал']
+        group_by: ['alertname', 'instance']
+        group_wait: 30s
+        group_interval: 30m
+        repeat_interval: 30m
