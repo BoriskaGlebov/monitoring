@@ -1814,7 +1814,7 @@
         {
           "refId": "B",
           "datasource": null,
-          "expr": "rate(container_network_transmit_bytes_total{id=\"/\", instance=~\"$server:.*\"}[$interval]) * 8",
+          "expr": "sum(rate(container_network_transmit_bytes_total{id=\"/\", instance=~\"$server:.*\"}[$interval])) * 8",
           "legendFormat": "TOTAL",
           "intervalFactor": 2,
           "step": 10
