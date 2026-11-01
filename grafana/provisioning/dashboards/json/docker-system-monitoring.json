@@ -2150,7 +2150,7 @@
     "list": [
       {
         "name": "containergroup",
-        "label": "Container Group",
+        "label": "Group",
         "type": "query",
         "datasource": {
           "type": "prometheus",
@@ -2159,11 +2159,11 @@
         "definition": "label_values(node_uname_info, group)",
         "query": "label_values(node_uname_info, group)",
         "current": {
-          "text": "",
-          "value": ""
+          "text": "All",
+          "value": "$__all"
         },
         "options": [],
-        "includeAll": false,
+        "includeAll": true,
         "allValue": ".+",
         "multi": false,
         "hide": 0,
@@ -2273,8 +2273,8 @@
           "type": "prometheus",
           "uid": "prometheus"
         },
-        "definition": "label_values(node_uname_info{job=\"node-exporter\"}, nodename)",
-        "query": "label_values(node_uname_info{job=\"node-exporter\"}, nodename)",
+        "definition": "label_values(node_uname_info{job=\"node-exporter\", group=~\"$containergroup\"}, nodename)",
+        "query": "label_values(node_uname_info{job=\"node-exporter\", group=~\"$containergroup\"}, nodename)",
         "current": {
           "text": "vpn-boriska.ru",
           "value": "vpn-boriska.ru"

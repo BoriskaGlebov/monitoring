@@ -207,15 +207,19 @@ groups:
         annotations:
           summary: "Трафик на {{ $labels.instance }}: входящий сейчас {{ printf \"%.2f\" $values.CI.Value }} Мбит/с (норма {{ printf \"%.2f\" $values.DI.Value }} Мбит/с, осталось {{ humanizePercentage $values.RI.Value }}), исходящий сейчас {{ printf \"%.2f\" $values.CO.Value }} Мбит/с (норма {{ printf \"%.2f\" $values.DO.Value }} Мбит/с, осталось {{ humanizePercentage $values.RO.Value }}) — возможна блокировка (РКН), нужна срочная проверка доступности"
         data:
-          # RI/RO — отношение текущего трафика (5m) к среднему за тот же час за последние 3 дня
-          # (вместо одной точки "сутки назад" — устойчивее к разовым скачкам трафика).
+          # RI/RO — отношение текущего трафика (5m, только group=prod — дев/резервные хосты
+          # сюда не попадают вообще) к среднему за тот же час за последние 3 дня.
+          # База считается БЕЗ фильтра по group и объединяется через "on (instance)":
+          # лейбл group появился только с момента введения, у исторических офсетов (1d/2d/3d)
+          # его ещё нет — без "on (instance)" джойн бы просто не нашёл пару и база всегда
+          # была бы пустой.
           - refId: RI
             relativeTimeRange: { from: 300, to: 0 }
             datasourceUid: prometheus
             model:
               expr: >
-                sum by (instance) (rate(container_network_receive_bytes_total{id="/",interface!~"lo|docker.*|veth.*|br-.*"}[5m]))
-                /
+                sum by (instance) (rate(container_network_receive_bytes_total{id="/",group="prod",interface!~"lo|docker.*|veth.*|br-.*"}[5m]))
+                / on (instance)
                 (
                   (
                     sum by (instance) (rate(container_network_receive_bytes_total{id="/",interface!~"lo|docker.*|veth.*|br-.*"}[1h] offset 1d))
@@ -228,7 +232,8 @@ groups:
               instant: true
               refId: RI
           # FI/FO — базовая линия (3-дневное среднее) в байт/с, нужна только для порога "> 80 Кбит/с",
-          # чтобы не делить на почти-ноль на мёртвом ночном/фоновом трафике.
+          # чтобы не делить на почти-ноль на мёртвом ночном/фоновом трафике. Без фильтра по group —
+          # сам по себе не решает, для кого алерт сработает (это уже обеспечено через RI/RO).
           - refId: FI
             relativeTimeRange: { from: 300, to: 0 }
             datasourceUid: prometheus
@@ -248,8 +253,8 @@ groups:
             datasourceUid: prometheus
             model:
               expr: >
-                sum by (instance) (rate(container_network_transmit_bytes_total{id="/",interface!~"lo|docker.*|veth.*|br-.*"}[5m]))
-                /
+                sum by (instance) (rate(container_network_transmit_bytes_total{id="/",group="prod",interface!~"lo|docker.*|veth.*|br-.*"}[5m]))
+                / on (instance)
                 (
                   (
                     sum by (instance) (rate(container_network_transmit_bytes_total{id="/",interface!~"lo|docker.*|veth.*|br-.*"}[1h] offset 1d))
@@ -275,13 +280,14 @@ groups:
                 ) / 3
               instant: true
               refId: FO
-          # CI/CO и DI/DO — только для текста уведомления, в Мбит/с
+          # CI/CO и DI/DO — только для текста уведомления, в Мбит/с. DI/DO (база, офсеты) —
+          # тоже без group, по той же причине, что и FI/FO.
           - refId: CI
             relativeTimeRange: { from: 300, to: 0 }
             datasourceUid: prometheus
             model:
               expr: >
-                sum by (instance) (rate(container_network_receive_bytes_total{id="/",interface!~"lo|docker.*|veth.*|br-.*"}[5m])) * 8 / 1e6
+                sum by (instance) (rate(container_network_receive_bytes_total{id="/",group="prod",interface!~"lo|docker.*|veth.*|br-.*"}[5m])) * 8 / 1e6
               instant: true
               refId: CI
           - refId: DI
@@ -305,7 +311,7 @@ groups:
             datasourceUid: prometheus
             model:
               expr: >
-                sum by (instance) (rate(container_network_transmit_bytes_total{id="/",interface!~"lo|docker.*|veth.*|br-.*"}[5m])) * 8 / 1e6
+                sum by (instance) (rate(container_network_transmit_bytes_total{id="/",group="prod",interface!~"lo|docker.*|veth.*|br-.*"}[5m])) * 8 / 1e6
               instant: true
               refId: CO
           - refId: DO
