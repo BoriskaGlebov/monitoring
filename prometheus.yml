@@ -19,10 +19,10 @@ scrape_configs:
         labels:
           instance: 'boris-guard.space:8080'
           group: 'prod'
-      - targets: [ 'help-blocks.ru:8080', 'x-ray-boriska.pro:8080' ]
+      - targets: [ 'help-blocks.ru:8080', 'x-ray-boriska.pro:8080', 'boris-guard.pro:8080' ]
         labels:
           group: 'prod'
-      - targets: [ 'vpn-boriska.ru:8080', 'amn-boris.ru:8080', 'boris-guard.pro:8080' ]
+      - targets: [ 'vpn-boriska.ru:8080', 'amn-boris.ru:8080' ]
         labels:
           group: 'dev'
   - job_name: 'node-exporter'
@@ -31,9 +31,9 @@ scrape_configs:
         labels:
           instance: 'boris-guard.space:9100'
           group: 'prod'
-      - targets: [ 'help-blocks.ru:9100', 'x-ray-boriska.pro:9100' ]
+      - targets: [ 'help-blocks.ru:9100', 'x-ray-boriska.pro:9100', 'boris-guard.pro:9100' ]
         labels:
           group: 'prod'
-      - targets: [ 'vpn-boriska.ru:9100', 'amn-boris.ru:9100', 'boris-guard.pro:9100' ]
+      - targets: [ 'vpn-boriska.ru:9100', 'amn-boris.ru:9100' ]
         labels:
           group: 'dev'
