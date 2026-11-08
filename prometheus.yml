@@ -22,7 +22,7 @@ scrape_configs:
       - targets: [ 'help-blocks.ru:8080', 'x-ray-boriska.pro:8080', 'boris-guard.pro:8080' ]
         labels:
           group: 'prod'
-      - targets: [ 'vpn-boriska.ru:8080', 'vps01.boris-guard.pro:8080' ]
+      - targets: [ 'vps06.boris-guard.pro:8080', 'vps01.boris-guard.pro:8080' ]
         labels:
           group: 'dev'
   - job_name: 'node-exporter'
@@ -34,6 +34,6 @@ scrape_configs:
       - targets: [ 'help-blocks.ru:9100', 'x-ray-boriska.pro:9100', 'boris-guard.pro:9100' ]
         labels:
           group: 'prod'
-      - targets: [ 'vpn-boriska.ru:9100', 'vps01.boris-guard.pro:9100' ]
+      - targets: [ 'vps06.boris-guard.pro:9100', 'vps01.boris-guard.pro:9100' ]
         labels:
           group: 'dev'
