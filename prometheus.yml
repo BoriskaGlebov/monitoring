@@ -19,7 +19,7 @@ scrape_configs:
         labels:
           instance: 'boris-guard.space:8080'
           group: 'prod'
-      - targets: [ 'help-blocks.ru:8080', 'x-ray-boriska.pro:8080', 'vps05.boris-guard.pro:8080' ]
+      - targets: [ 'vps02.boris-guard.pro:8080', 'x-ray-boriska.pro:8080', 'vps05.boris-guard.pro:8080' ]
         labels:
           group: 'prod'
       - targets: [ 'vps06.boris-guard.pro:8080', 'vps01.boris-guard.pro:8080' ]
@@ -31,7 +31,7 @@ scrape_configs:
         labels:
           instance: 'boris-guard.space:9100'
           group: 'prod'
-      - targets: [ 'help-blocks.ru:9100', 'x-ray-boriska.pro:9100', 'vps05.boris-guard.pro:9100' ]
+      - targets: [ 'vps02.boris-guard.pro:9100', 'x-ray-boriska.pro:9100', 'vps05.boris-guard.pro:9100' ]
         labels:
           group: 'prod'
       - targets: [ 'vps06.boris-guard.pro:9100', 'vps01.boris-guard.pro:9100' ]
