@@ -11,15 +11,15 @@ scrape_configs:
     static_configs:
       - targets: [ 'localhost:9090' ]
         labels:
-          instance: 'boris-guard.space:9090'
+          instance: 'vps04.boris-guard.pro:9090'
           group: 'prod'
   - job_name: 'cadvisor'
     static_configs:
       - targets: [ 'cadvisor:8080' ]
         labels:
-          instance: 'boris-guard.space:8080'
+          instance: 'vps04.boris-guard.pro:8080'
           group: 'prod'
-      - targets: [ 'vps02.boris-guard.pro:8080', 'x-ray-boriska.pro:8080', 'vps05.boris-guard.pro:8080' ]
+      - targets: [ 'vps02.boris-guard.pro:8080', 'vps03.boris-guard.pro:8080', 'vps05.boris-guard.pro:8080' ]
         labels:
           group: 'prod'
       - targets: [ 'vps06.boris-guard.pro:8080', 'vps01.boris-guard.pro:8080' ]
@@ -29,9 +29,9 @@ scrape_configs:
     static_configs:
       - targets: [ 'node-exporter:9100' ]
         labels:
-          instance: 'boris-guard.space:9100'
+          instance: 'vps04.boris-guard.pro:9100'
           group: 'prod'
-      - targets: [ 'vps02.boris-guard.pro:9100', 'x-ray-boriska.pro:9100', 'vps05.boris-guard.pro:9100' ]
+      - targets: [ 'vps02.boris-guard.pro:9100', 'vps03.boris-guard.pro:9100', 'vps05.boris-guard.pro:9100' ]
         labels:
           group: 'prod'
       - targets: [ 'vps06.boris-guard.pro:9100', 'vps01.boris-guard.pro:9100' ]

@@ -100,7 +100,7 @@ jobs:
         run: |
           ssh ${{ secrets.SERVER_USER_BORIS_GUARD }}@${{ secrets.SERVER_IP_BORIS_GUARD }} << 'EOF'
           set -e
-          cd production/monitoring || exit  # Переход в директорию приложения
+          cd /opt/monitoring || exit  # Переход в директорию приложения
           git restore .
           git checkout develop
           git pull origin develop            # Обновление кода из репозитория
