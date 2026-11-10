@@ -78,7 +78,7 @@ jobs:
 #          docker compose -f docker-compose.yaml -f docker-compose.monitoring-server.yml -f docker-compose.monitoring-agent.yml up -d --build
 #          EOF
 
-  monitoring_boris_guard:
+  monitoring_vps04:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/develop'  # Выполняется только для ветки develop.
     steps:
