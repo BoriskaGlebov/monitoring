@@ -22,7 +22,7 @@ scrape_configs:
       - targets: [ 'vps02.boris-guard.pro:8080', 'vps03.boris-guard.pro:8080', 'vps05.boris-guard.pro:8080' ]
         labels:
           group: 'prod'
-      - targets: [ 'vps06.boris-guard.pro:8080', 'vps01.boris-guard.pro:8080' ]
+      - targets: [ 'vps06.boris-guard.pro:8080', 'vps01.boris-guard.pro:8080','vps07.boris-guard.pro:8080', 'vps08.boris-guard.pro:8080' ]
         labels:
           group: 'dev'
   - job_name: 'node-exporter'
@@ -34,6 +34,6 @@ scrape_configs:
       - targets: [ 'vps02.boris-guard.pro:9100', 'vps03.boris-guard.pro:9100', 'vps05.boris-guard.pro:9100' ]
         labels:
           group: 'prod'
-      - targets: [ 'vps06.boris-guard.pro:9100', 'vps01.boris-guard.pro:9100' ]
+      - targets: [ 'vps06.boris-guard.pro:9100', 'vps01.boris-guard.pro:9100', 'vps07.boris-guard.pro:9100', 'vps08.boris-guard.pro:9100' ]
         labels:
           group: 'dev'
